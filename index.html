@@ -78,7 +78,7 @@ body{background:linear-gradient(180deg,#EAF7FD 0,#F7FBFD 320px);font-family:"Not
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
 
-/* ===== Dream Tree V5.0 Premium ===== */
+/* ===== Dream Tree V5.1 Premium ===== */
 :root{--dt-blue:#78cfff;--dt-blue-strong:#45b6f4;--dt-blue-soft:#eaf8ff;--dt-green:#63c985;--dt-gold:#f4c34f;--dt-navy:#173552;--dt-surface:#ffffff;--dt-shadow:0 16px 42px rgba(58,139,195,.13)}
 body{background:radial-gradient(circle at 15% 0,#e4f7ff 0,transparent 34%),linear-gradient(180deg,#f5fbff 0,#fbfdff 100%)}
 .app{max-width:1160px}
@@ -99,7 +99,7 @@ body{background:radial-gradient(circle at 15% 0,#e4f7ff 0,transparent 34%),linea
 @media(max-width:390px){.daily-message{font-size:22px}.welcome-card,.seed-card{padding:20px}.dream-tree-card{grid-template-columns:1fr}.tree-visual{margin:auto}}
 
 
-/* ===== V5.0 Premium Dashboard Redesign ===== */
+/* ===== V5.1 Premium Dashboard Redesign ===== */
 :root{
   --dt-blue:#43A7F5;
   --dt-blue-2:#87D2FF;
@@ -229,6 +229,82 @@ body{background:
  .execution-layout{grid-template-columns:1fr}.quick-actions{grid-template-columns:1fr}
 }
 
+
+/* ===== Dream Tree V5.1 Premium ===== */
+.brand-copy p{display:none!important}
+.top{position:sticky;top:10px;z-index:20}
+.brand-copy:after{
+  content:"Money grows with purpose.";
+  display:block;margin-top:3px;font-size:11px;font-weight:700;
+  letter-spacing:.045em;color:#7b91a3
+}
+.greeting-card{
+  min-height:196px;
+  background:
+    radial-gradient(circle at 86% 18%,rgba(103,198,255,.18),transparent 24%),
+    linear-gradient(145deg,#fff,#eefaff);
+}
+.daily-message-new{max-width:560px}
+.seed-premium{
+  background:
+    radial-gradient(circle at 88% 58%,rgba(255,255,255,.11) 0 25%,transparent 26%),
+    linear-gradient(135deg,#438ff0 0%,#54b2f6 55%,#88d3ff 100%);
+  box-shadow:0 20px 44px rgba(44,142,213,.23);
+}
+.seed-premium:after{
+  content:"";position:absolute;right:34px;top:42px;width:132px;height:70px;
+  border-top:3px solid rgba(255,255,255,.32);border-radius:50%;
+  transform:rotate(-13deg)
+}
+.seed-mark{font-size:66px;right:24px;bottom:16px}
+.seed-slogan{max-width:230px;font-size:13px}
+.tree-panel{
+  grid-template-columns:132px 1fr;
+  background:linear-gradient(145deg,#fff,#fbfffd)
+}
+.tree-visual{position:relative;overflow:hidden}
+.tree-visual:after{
+  content:"";position:absolute;left:50%;bottom:14px;width:68px;height:10px;
+  transform:translateX(-50%);border-radius:50%;
+  background:rgba(48,143,83,.10);filter:blur(5px)
+}
+.growth-steps{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:15px
+}
+.growth-step{
+  border:1px solid #dceee4;background:#f7fcf9;border-radius:13px;
+  padding:9px 8px;text-align:center;font-size:11px;color:#6f887b
+}
+.growth-step b{display:block;color:#274d3a;margin-top:3px;font-size:12px}
+.growth-step.done{background:#e8f8ee;border-color:#bfe8ce}
+.growth-step.done:before{content:"✓ ";color:#2ca866;font-weight:900}
+.task-list-premium{display:grid;gap:10px}
+.task-item-premium{
+  display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:11px;
+  padding:12px;border:1px solid #e3edf4;border-radius:16px;background:#fbfdff
+}
+.task-dot{
+  width:34px;height:34px;border-radius:12px;display:grid;place-items:center;
+  background:#eaf7ff;color:#167bb9;font-weight:900
+}
+.task-item-premium.done{opacity:.72;background:#f6fbf8}
+.task-item-premium.done .task-dot{background:#e7f8ed;color:#26a45e}
+.task-item-premium b{font-size:13px;display:block}
+.task-item-premium small{display:block;color:#7e91a1;margin-top:3px}
+.task-item-premium .task-value{font-family:var(--font-num);font-weight:800;font-size:13px}
+.metric-card{transition:.2s ease}
+.metric-card:hover,.quick-action:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(45,119,165,.12)}
+.quick-action{transition:.2s ease}
+.execution-layout .ring{box-shadow:inset 0 0 0 8px #fff,0 9px 22px rgba(52,132,181,.10)}
+.nav{box-shadow:0 18px 52px rgba(35,96,137,.20)}
+@media(max-width:760px){
+  .top{top:6px}
+  .brand-copy:after{font-size:10px}
+  .tree-panel{grid-template-columns:94px 1fr}
+  .growth-steps{grid-template-columns:1fr 1fr 1fr}
+  .growth-step{padding:8px 3px}
+}
+
 </style>
 </head>
 <body><div id="brandSplash" role="status" aria-label="正在開啟 Dream Tree"><div class="splash-inner"><img class="splash-logo" src="icon-512.png" alt=""><div class="splash-title">Dream Tree</div><div class="splash-en">MONEY PLANNER</div><div class="splash-tagline">把每一筆資金，種成想要的未來。</div></div></div>
@@ -253,6 +329,11 @@ body{background:
           <span class="tree-chip" id="treeStage">階段 1・種子</span>
           <span class="tree-chip" id="treeGoals">0 個夢想</span>
           <span class="tree-chip" id="treeDone">0% 本月進度</span>
+        </div>
+        <div class="growth-steps">
+          <div class="growth-step" id="stepPlan">○<b>完成規劃</b></div>
+          <div class="growth-step" id="stepTransfer">○<b>執行轉帳</b></div>
+          <div class="growth-step" id="stepClose">○<b>月底清算</b></div>
         </div>
       </div>
     </div>
@@ -346,7 +427,7 @@ body{background:
 <div class="card" style="margin-top:14px"><div class="title"><h2>本月清算調整紀錄</h2><span class="badge" id="adjustmentCount">0 筆</span></div><div id="adjustmentRows"></div></div>
 </section>
 </div>
-<div class="brand-footer"><img src="brand-logo.png" alt="">Dream Tree · 資金規劃系統 <span class="v5-version">V5.0 Premium</span></div><nav class="nav"><button class="active" data-page="home" onclick="showPage('home')"><span>⌂</span>首頁</button><button data-page="plan" onclick="showPage('plan')"><span>＄</span>規劃</button><button data-page="accounts" onclick="showPage('accounts')"><span>▣</span>帳戶</button><button data-page="flow" onclick="showPage('flow')"><span>✓</span>轉帳</button><button data-page="reconcile" onclick="showPage('reconcile')"><span>≋</span>清算</button></nav>
+<div class="brand-footer"><img src="brand-logo.png" alt="">Dream Tree · 資金規劃系統 <span class="v5-version">V5.1 Premium</span></div><nav class="nav"><button class="active" data-page="home" onclick="showPage('home')"><span>⌂</span>首頁</button><button data-page="plan" onclick="showPage('plan')"><span>＄</span>規劃</button><button data-page="accounts" onclick="showPage('accounts')"><span>▣</span>帳戶</button><button data-page="flow" onclick="showPage('flow')"><span>✓</span>轉帳</button><button data-page="reconcile" onclick="showPage('reconcile')"><span>≋</span>清算</button></nav>
 <script>
 const KEY='moneyPlannerV25';const $=id=>document.getElementById(id);const uid=()=>Math.random().toString(36).slice(2,10);const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));const money=n=>'NT$ '+Math.round(Number(n||0)).toLocaleString('zh-TW');
 let app=JSON.parse(localStorage.getItem(KEY)||'null')||{month:new Date().toISOString().slice(0,7),accounts:[{id:'a1',name:'國泰薪資帳戶',free:false,relay:false,freeCount:0,balance:0},{id:'a2',name:'iLEO',free:true,relay:true,freeCount:99,balance:0},{id:'a3',name:'Line Pay',free:false,relay:false,freeCount:0,balance:0},{id:'a4',name:'證券戶',free:false,relay:false,freeCount:0,balance:0}],months:{}};
@@ -386,7 +467,46 @@ function renderAlloc(){let m=M();$('allocationRows').className=m.confirmed?'lock
 function renderAccounts(){$('accountRows').innerHTML=app.accounts.map(a=>{let f=accountFlow(a.id);return `<div class="account"><div class="account-head"><input style="font-weight:750;border:0;font-size:16px;width:65%" value="${esc(a.name)}" onchange="patchAccount('${a.id}','name',this.value)"><button class="icon" onclick="delAccount('${a.id}')">刪除</button></div><div class="balance-grid"><div class="balance-cell"><small>月初餘額</small><b>${money(f.opening)}</b></div><div class="balance-cell"><small>已完成流入</small><b>${money(f.income+f.tin)}</b></div><div class="balance-cell"><small>已完成流出</small><b>${money(f.expense+f.tout)}</b></div><div class="balance-cell"><small>調整</small><b>${Number(f.adj)>0?'+':''}${money(f.adj)}</b></div><div class="balance-cell"><small>目前帳面餘額</small><b>${money(f.book)}</b></div></div><div class="muted" style="margin-top:8px">最近實際基準：${money(a.balance||0)}</div><div class="mini-grid"><label class="switch"><input type="checkbox" ${a.free?'checked':''} onchange="patchAccount('${a.id}','free',this.checked)">免手續費轉出</label><label class="switch"><input type="checkbox" ${a.relay?'checked':''} onchange="patchAccount('${a.id}','relay',this.checked)">優先中轉帳戶</label><div class="field" style="margin:0"><label>每月免費次數（0＝不限）</label><input type="number" min="0" value="${a.freeCount||0}" onchange="patchAccount('${a.id}','freeCount',this.value)"></div></div></div>`}).join('');renderMonthHistory()}
 function renderMonthHistory(){let keys=Object.keys(app.months).sort().reverse();$('monthCount').textContent=`${keys.length} 個月`;$('monthHistory').innerHTML=keys.map(k=>{let m=app.months[k];return `<div class="history-row"><span><b>${k}</b><small>${m.reconciliationClosed?'已完成清算':'進行中'}・收入 ${money((m.incomes||[]).reduce((s,x)=>s+Number(x.amount||0),0))}</small></span><span class="badge ${m.reconciliationClosed?'ok':'warn'}">${m.reconciliationClosed?'已鎖定':'可編輯'}</span><button class="icon" onclick="switchMonth('${k}')">開啟</button></div>`}).join('')||'<div class="empty">尚無月份資料</div>'}
 function health(){let m=M(),score=100,items=[],alloc=m.allocations.reduce((s,x)=>s+Number(x.amount||0),0),free=freeMoney(),saving=m.allocations.filter(x=>m.goals.some(g=>g.name===x.name)).reduce((s,x)=>s+x.amount,0),paidTransfers=(m.transfers||[]).filter(x=>!x.free).length;if(Math.abs(free-alloc)>.5){score-=20;items.push('⚠️ 本月資金尚未完整分配')}else items.push('✅ 本月資金已完整分配');if(totalIncome()>0&&saving/totalIncome()<.1){score-=15;items.push('⚠️ 儲蓄比例低於 10%')}else items.push('✅ 儲蓄安排比例良好');if(totalIncome()>0&&totalExpenses()/totalIncome()>.6){score-=15;items.push('⚠️ 支出超過收入的 60%')}else items.push('✅ 支出比例在可控範圍');if(paidTransfers>1){score-=10;items.push(`⚠️ 仍有 ${paidTransfers} 筆可能付費轉帳`)}else items.push('✅ 已優先使用免手續費帳戶');return{score:Math.max(0,score),items}}
-function renderHome(){let m=M(),f=freeMoney();$('hIncome').textContent=money(totalIncome());$('hReceived').textContent=money(received());$('hExpense').textContent=money(totalExpenses());$('hPaid').textContent=money(paid());$('hFree').textContent=money(f);let ts=m.transfers||[],done=ts.filter(x=>x.done).length,p=ts.length?Math.round(done/ts.length*100):0;$('ringText').textContent=p+'%';$('ring').style.background=`conic-gradient(var(--sky) ${p}%,#e9f3fa ${p}%)`;$('homeBar').style.width=p+'%';$('homeStatus').textContent=m.reconciliationClosed?'本月已清算':m.confirmed?(p===100?'本月已完成':'規劃已確認'):'尚未確認';let pending=[...m.incomes.filter(x=>!x.done).map(x=>({t:'收入待入帳',n:x.name,a:x.amount})),...m.expenses.filter(x=>!x.done).map(x=>({t:'支出待付款',n:x.name,a:x.amount})),...ts.filter(x=>!x.done).map(x=>({t:'待轉帳',n:`${accountName(x.from)} → ${accountName(x.to)}`,a:x.amount}))];$('homeTasks').innerHTML=pending.length?pending.slice(0,6).map(x=>`<div class="line"><span>□ ${esc(x.n)}<small>${x.t}</small></span><b>${money(x.a)}</b></div>`).join(''):'<div class="empty">目前沒有待辦事項</div>';$('homeSummary').innerHTML=`<div class="line"><span>目前月份</span><b>${app.month}</b></div><div class="line"><span>預計可規劃資金</span><b>${money(f)}</b></div><div class="line"><span>已安排</span><b>${money(m.allocations.reduce((s,x)=>s+Number(x.amount||0),0))}</b></div><div class="line"><span>清算狀態</span><b>${m.reconciliationClosed?'已完成':'尚未完成'}</b></div>`;let h=m.confirmed?health():null;$('healthScore').textContent=h?h.score:'--';$('healthLabel').textContent=h?h.score+' 分':'尚未檢查';$('healthLabel').className='badge '+(h?(h.score>=85?'ok':h.score>=65?'warn':'bad'):'');$('healthList').innerHTML=h?h.items.slice(0,5).map(x=>`<div class="health-item">${x}</div>`).join(''):''}
+function renderHome(){
+  let m=M(),f=freeMoney();
+  $('hIncome').textContent=money(totalIncome());
+  $('hReceived').textContent=money(received());
+  $('hExpense').textContent=money(totalExpenses());
+  $('hPaid').textContent=money(paid());
+  $('hFree').textContent=money(f);
+  let ts=m.transfers||[],done=ts.filter(x=>x.done).length,p=ts.length?Math.round(done/ts.length*100):0;
+  $('ringText').textContent=p+'%';
+  $('ring').style.background=`conic-gradient(var(--sky) ${p}%,#e9f3fa ${p}%)`;
+  $('homeBar').style.width=p+'%';
+  $('homeStatus').textContent=m.reconciliationClosed?'本月已清算':m.confirmed?(p===100?'本月已完成':'規劃已確認'):'尚未確認';
+  if($('executionProgressText'))$('executionProgressText').textContent=p===100?'本月任務完成':p>0?`已完成 ${p}%`:'等待第一步';
+
+  const realPending=[
+    ...m.incomes.filter(x=>!x.done).map(x=>({icon:'＋',t:'收入待入帳',n:x.name||'新收入',a:x.amount,done:false})),
+    ...m.expenses.filter(x=>!x.done).map(x=>({icon:'−',t:'支出待付款',n:x.name||'待付款項目',a:x.amount,done:false})),
+    ...ts.filter(x=>!x.done).map(x=>({icon:'↗',t:'待執行轉帳',n:`${accountName(x.from)} → ${accountName(x.to)}`,a:x.amount,done:false}))
+  ];
+  const guideTasks=[
+    {icon:m.incomes.length?'✓':'1',n:'登記本月收入',t:m.incomes.length?'已建立收入資料':'先建立收入來源',a:'',done:m.incomes.length>0},
+    {icon:m.confirmed?'✓':'2',n:'完成本月規劃',t:m.confirmed?'規劃已確認':'安排儲蓄、投資與生活資金',a:'',done:m.confirmed},
+    {icon:ts.length&&done===ts.length?'✓':'3',n:'執行資金轉帳',t:ts.length?(done===ts.length?'全部完成':`剩餘 ${ts.length-done} 筆`):'確認規劃後產生轉帳流程',a:'',done:ts.length>0&&done===ts.length},
+    {icon:m.reconciliationClosed?'✓':'4',n:'月底核對帳戶',t:m.reconciliationClosed?'本月已完成清算':'月末確認實際餘額',a:'',done:m.reconciliationClosed}
+  ];
+  const taskData=realPending.length?realPending.slice(0,5):guideTasks;
+  $('homeTasks').innerHTML=`<div class="task-list-premium">${taskData.map(x=>`
+    <div class="task-item-premium ${x.done?'done':''}">
+      <span class="task-dot">${x.icon}</span>
+      <span><b>${esc(x.n)}</b><small>${esc(x.t)}</small></span>
+      <span class="task-value">${typeof x.a==='number'?money(x.a):''}</span>
+    </div>`).join('')}</div>`;
+
+  $('homeSummary').innerHTML=`<div class="line"><span>目前月份</span><b>${app.month}</b></div><div class="line"><span>預計可規劃資金</span><b>${money(f)}</b></div><div class="line"><span>已安排</span><b>${money(m.allocations.reduce((s,x)=>s+Number(x.amount||0),0))}</b></div><div class="line"><span>清算狀態</span><b>${m.reconciliationClosed?'已完成':'尚未完成'}</b></div>`;
+  let h=m.confirmed?health():null;
+  $('healthScore').textContent=h?h.score:'--';
+  $('healthLabel').textContent=h?h.score+' 分':'尚未檢查';
+  $('healthLabel').className='badge '+(h?(h.score>=85?'ok':h.score>=65?'warn':'bad'):'');
+  $('healthList').innerHTML=h?h.items.slice(0,5).map(x=>`<div class="health-item">${x}</div>`).join(''):'';
+}
 function renderFlow(){let m=M(),ts=m.transfers||[];if(!ts.length){$('flowChart').innerHTML='<div class="empty">請先確認本月規劃</div>';$('transferList').innerHTML='<div class="empty">尚無待轉帳項目</div>';$('feeText').textContent='尚未產生';$('freeQuota').innerHTML='<div class="empty">尚無使用資料</div>';return}let salary=app.accounts.find(a=>a.id===m.salaryAccount)||app.accounts[0],relay=app.accounts.find(a=>a.relay&&a.free),usingRelay=relay&&ts.some(t=>t.to===relay.id&&t.from===salary.id);$('flowChart').innerHTML=`<div class="flow"><div class="flow-node primary"><b>${esc(salary.name)}</b><div class="muted">主要資金帳戶</div></div>${usingRelay?`<div class="flow-arrow">↓</div><div class="flow-node primary"><b>${esc(relay.name)}</b> <span class="badge ok">免手續費中轉</span></div>`:''}<div class="flow-arrow">↓</div><div class="branch">${ts.filter(t=>!(usingRelay&&t.to===relay.id)).map(t=>`<div class="flow-node"><b>${esc(accountName(t.to))}</b><div>${money(t.amount)}</div><small class="muted">${t.items.join('、')}</small></div>`).join('')}</div></div>`;let paidCount=ts.filter(t=>!t.free).length;$('feeText').textContent=paidCount?`可能付費 ${paidCount} 筆`:'預估手續費 0 元';$('feeText').className='badge '+(paidCount?'warn':'ok');$('transferList').innerHTML=ts.map(t=>`<label class="transfer"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTransfer('${t.id}',this.checked)"><div class="grow"><b>${esc(accountName(t.from))} → ${esc(accountName(t.to))}</b><div class="muted">${t.items.join('、')}</div></div><div style="text-align:right"><b>${money(t.amount)}</b><br><span class="badge ${t.free?'ok':'warn'}">${t.free?'免手續費':'可能付費'}</span></div></label>`).join('');$('transferProgress').textContent=Math.round(ts.filter(x=>x.done).length/ts.length*100)+'%';$('freeQuota').innerHTML=app.accounts.filter(a=>a.free).map(a=>{let used=ts.filter(t=>t.from===a.id&&t.free).length,limit=a.freeCount===0?'不限':a.freeCount,remain=a.freeCount===0?'不限':Math.max(0,a.freeCount-used);return`<div class="line"><span><b>${esc(a.name)}</b><small>本月已使用 ${used} 次</small></span><span>額度 ${limit}<br><small>剩餘 ${remain}</small></span></div>`}).join('')||'<div class="empty">尚未設定免手續費帳戶</div>'}
 function download(name,text,type){let b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),500)}function exportBackup(){download(`資金規劃系統備份_${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(app,null,2),'application/json')}function importBackup(file){if(!file)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!d.accounts||!d.months)throw 0;if(confirm('匯入將覆蓋目前資料，確定繼續？')){app=d;save();location.reload()}}catch(e){alert('備份檔格式不正確')}};r.readAsText(file)}function csvCell(v){return `"${String(v??'').replace(/"/g,'""')}"`}function exportReconcileCSV(){let rows=recRows(),data=[['月份','帳戶','帳面餘額','實際餘額','差額','原因'],...rows.map(r=>[app.month,accountName(r.account),r.book,r.actual,Number(r.actual)-Number(r.book),r.note])];download(`月底清算_${app.month}.csv`,'\ufeff'+data.map(r=>r.map(csvCell).join(',')).join('\n'),'text/csv;charset=utf-8')}
 function render(){let m=M();$('monthPicker').value=app.month;$('living').value=m.living;$('salaryAccount').innerHTML=opts(m.salaryAccount);$('living').onchange=e=>{if(!editable())return render();m.living=Number(e.target.value);save();render()};$('salaryAccount').onchange=e=>{if(!editable())return render();m.salaryAccount=e.target.value;save();render()};renderFundRows();renderGoals();renderAlloc();renderAccounts();$('basicIncomeTotal').textContent=money(totalIncome());$('basicReceivedTotal').textContent=money(received());$('basicExpenseTotal').textContent=money(totalExpenses());$('basicPaidTotal').textContent=money(paid());$('basicFreeTotal').textContent=money(freeMoney());$('incomeSummary').textContent=`${m.incomes.length} 筆・${money(totalIncome())}・已入帳 ${money(received())}`;$('expenseSummary').textContent=`${m.expenses.length} 筆・${money(totalExpenses())}・已付款 ${money(paid())}`;$('livingSummary').textContent=`額外生活預算 ${money(m.living)}・主要帳戶 ${accountName(m.salaryAccount)}`;$('basicSummary').textContent=`收入 ${money(totalIncome())}・支出 ${money(totalExpenses())}・可規劃 ${money(freeMoney())}`;$('goalSummary').textContent=m.goals.length?`${m.goals.length} 個目標・每月建議 ${money(m.goals.filter(g=>g.mode!=='pause').reduce((s,g)=>s+Number(g.monthly||0),0))}`:'尚未建立目標';$('allocationSummary').textContent=m.allocations.length?`已安排 ${money(m.allocations.reduce((s,x)=>s+Number(x.amount||0),0))}`:'尚未產生分配方案';renderHome();if($('flow').classList.contains('active'))renderFlow();if($('reconcile').classList.contains('active'))renderReconciliation()}
@@ -409,6 +529,12 @@ function renderDreamTree(){
   if($('treeTitle'))$('treeTitle').textContent=stage.title;
   if($('treeGoals'))$('treeGoals').textContent=`${goalTotal} 個夢想${goalDone?`・${goalDone} 個完成`:''}`;
   if($('treeDone'))$('treeDone').textContent=`${Math.round(score*100)}% 本月進度`;
+  const planDone=!!m.confirmed;
+  const transferFinished=transfers.length>0&&transfers.every(x=>x.done);
+  const closeDone=!!m.reconciliationClosed;
+  [['stepPlan',planDone],['stepTransfer',transferFinished],['stepClose',closeDone]].forEach(([id,done])=>{
+    const el=$(id);if(el){el.classList.toggle('done',done);el.firstChild.textContent=done?'✓':'○';}
+  });
 }
 function setDailyMessage(){
   const now=new Date(),hour=now.getHours(),day=Math.floor(now.getTime()/86400000);
@@ -417,7 +543,6 @@ function setDailyMessage(){
   const evening=['今天，你的夢想又長大了一點。','每一天的累積，都會成為明天的風景。','謝謝今天願意替未來努力的你。','把今天的努力，留給明天開花。','今晚好好休息，夢想仍在悄悄生長。'];
   const pool=hour<12?morning:hour<18?afternoon:evening,msg=pool[day%pool.length];
   if($('dailyMessage'))$('dailyMessage').textContent=msg;
-  if($('headerMessage'))$('headerMessage').textContent=msg.replace(/[。！？]$/,'');
   if($('dailyDate'))$('dailyDate').textContent=new Intl.DateTimeFormat('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(now);
 }
 
