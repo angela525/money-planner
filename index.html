@@ -98,6 +98,137 @@ body{background:radial-gradient(circle at 15% 0,#e4f7ff 0,transparent 34%),linea
 @media(max-width:760px){.v5-welcome{grid-template-columns:1fr}.welcome-card,.seed-card{min-height:auto}.daily-message{font-size:25px}.seed-amount{font-size:34px}.dream-tree-card{grid-template-columns:100px 1fr}.tree-visual{width:96px;height:96px;border-radius:25px;font-size:53px}.kpis{grid-template-columns:1fr 1fr}.top{padding:12px}.brand-en{display:block}}
 @media(max-width:390px){.daily-message{font-size:22px}.welcome-card,.seed-card{padding:20px}.dream-tree-card{grid-template-columns:1fr}.tree-visual{margin:auto}}
 
+
+/* ===== V5.0 Premium Dashboard Redesign ===== */
+:root{
+  --dt-blue:#43A7F5;
+  --dt-blue-2:#87D2FF;
+  --dt-blue-deep:#0E75B8;
+  --dt-green:#55C986;
+  --dt-gold:#F6BD45;
+  --dt-ink:#13324A;
+  --dt-muted:#7890A3;
+  --dt-bg:#F4FAFE;
+  --dt-card:#FFFFFF;
+  --dt-line:#DDECF6;
+  --dt-shadow:0 16px 45px rgba(41,119,170,.11);
+}
+body{background:
+ radial-gradient(circle at 84% 4%,rgba(126,211,255,.28),transparent 26%),
+ linear-gradient(180deg,#F2FAFF 0,#F8FCFF 360px,#F7FBFD 100%);
+}
+.app{max-width:1180px;padding:22px 20px 112px}
+.top{
+  display:grid;grid-template-columns:1fr auto;align-items:center;
+  padding:16px 18px;margin-bottom:20px;background:rgba(255,255,255,.88);
+  border:1px solid rgba(200,228,245,.95);border-radius:25px;
+  box-shadow:0 10px 34px rgba(54,129,178,.09);backdrop-filter:blur(18px)
+}
+.brand{display:flex;align-items:center;gap:13px;width:auto}
+.brand-logo{width:58px;height:58px;border-radius:17px;object-fit:cover}
+.brand-copy h1{font-size:24px;letter-spacing:-.04em}
+.brand-copy p{margin-top:2px;font-size:12px}
+.brand-en{font-size:12px;color:var(--dt-blue-deep);font-weight:800;letter-spacing:.08em}
+.month-nav{width:auto;justify-content:flex-end}
+.month-nav .month{width:170px;flex:none}
+.home-shell{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(330px,.85fr);gap:18px}
+.home-main,.home-side{display:grid;gap:18px;align-content:start}
+.premium-card{
+  background:rgba(255,255,255,.94);border:1px solid var(--dt-line);
+  border-radius:28px;box-shadow:var(--dt-shadow)
+}
+.greeting-card{
+  min-height:220px;padding:30px;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:space-between;
+  background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(233,248,255,.96))
+}
+.greeting-card:after{
+  content:"";position:absolute;right:-62px;top:-70px;width:230px;height:230px;
+  border-radius:50%;background:linear-gradient(145deg,rgba(127,211,255,.24),rgba(255,255,255,.05))
+}
+.eyebrow-new{
+  display:inline-flex;align-items:center;gap:7px;width:max-content;
+  padding:7px 11px;border-radius:999px;background:#EAF8FF;color:#147DBA;
+  font-size:12px;font-weight:800
+}
+.daily-message-new{font-size:34px;line-height:1.35;font-weight:800;letter-spacing:-.045em;max-width:620px;position:relative;z-index:1}
+.daily-note-new{color:var(--dt-muted);font-size:13px}
+.seed-premium{
+  min-height:220px;padding:28px;color:#fff;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#329BF0 0%,#63BEF7 58%,#84D4FF 100%)
+}
+.seed-premium:before{
+ content:"";position:absolute;inset:auto -25px -90px auto;width:210px;height:210px;
+ border:35px solid rgba(255,255,255,.09);border-radius:50%
+}
+.seed-label-new{font-size:13px;font-weight:700;color:rgba(255,255,255,.84)}
+.seed-amount-new{font-family:var(--font-num);font-weight:800;font-size:44px;letter-spacing:-.04em;margin:8px 0 38px}
+.seed-slogan{font-size:14px;font-weight:650;color:rgba(255,255,255,.94);max-width:260px}
+.seed-mark{position:absolute;right:24px;bottom:20px;font-size:72px;filter:drop-shadow(0 8px 12px rgba(0,80,130,.14));animation:floatSeed 4s ease-in-out infinite}
+@keyframes floatSeed{50%{transform:translateY(-7px) rotate(2deg)}}
+.tree-panel{padding:22px;display:grid;grid-template-columns:150px 1fr;align-items:center;gap:22px}
+.tree-visual{
+  width:142px;height:142px;border-radius:35px;font-size:78px;
+  display:grid;place-items:center;background:linear-gradient(145deg,#F0FFF6,#DDF8E8);
+  box-shadow:inset 0 0 0 1px #CDEEDB,0 10px 24px rgba(55,164,105,.10);
+  animation:treeBreathe 3.5s ease-in-out infinite;transform-origin:bottom center
+}
+@keyframes treeBreathe{50%{transform:scale(1.035) rotate(.8deg)}}
+.tree-copy h2{font-size:23px;margin:0 0 7px}.tree-copy p{margin:0;color:var(--dt-muted);line-height:1.7;font-size:13px}
+.tree-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.tree-chip{padding:7px 10px;border-radius:999px;background:#ECFAF2;color:#287750;font-size:11px;font-weight:800}
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.metric-card{padding:17px 18px;border-radius:21px;background:#fff;border:1px solid var(--dt-line);box-shadow:0 9px 25px rgba(50,120,165,.07)}
+.metric-card small{display:block;color:var(--dt-muted);font-size:12px;font-weight:700}
+.metric-card b{display:block;font-family:var(--font-num);font-size:24px;margin-top:7px;letter-spacing:-.035em}
+.metric-card:nth-child(1){border-top:4px solid #66C9F7}.metric-card:nth-child(2){border-top:4px solid #58C88A}
+.metric-card:nth-child(3){border-top:4px solid #F3B84D}.metric-card:nth-child(4){border-top:4px solid #91A8BA}
+.action-card{padding:22px}
+.section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.section-heading h2{margin:0;font-size:18px}.section-heading .subtle{font-size:12px;color:var(--dt-muted)}
+.execution-layout{display:grid;grid-template-columns:124px 1fr;gap:20px;align-items:center}
+.execution-copy{display:grid;gap:10px}.execution-stat{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--dt-line)}
+.task-card{padding:22px;min-height:280px}.task-card .empty{padding:38px 10px}
+.quick-card{padding:22px}.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quick-action{border:1px solid var(--dt-line);background:#F8FCFF;border-radius:17px;padding:15px;text-align:left;color:var(--dt-ink);cursor:pointer}
+.quick-action b{display:block;font-size:14px}.quick-action small{display:block;color:var(--dt-muted);margin-top:4px}
+.health-compact{padding:22px}.health-row{display:flex;align-items:center;gap:16px}
+.health-score{font-size:40px}
+#hFree{display:none}
+.brand-footer{display:none}
+.nav{width:min(640px,calc(100% - 26px));bottom:13px;border-radius:23px}
+.nav button.active{background:linear-gradient(180deg,#E9F8FF,#DDF3FF)}
+@media(max-width:900px){
+ .home-shell{grid-template-columns:1fr}.home-side{grid-template-columns:1fr 1fr}
+ .task-card,.quick-card{min-height:auto}
+}
+@media(max-width:760px){
+ .app{padding:12px 12px 105px}
+ .top{grid-template-columns:1fr;padding:13px;border-radius:23px;gap:13px}
+ .brand-logo{width:54px;height:54px}.brand-copy h1{font-size:23px}
+ .month-nav{width:100%;display:grid;grid-template-columns:42px minmax(0,1fr) 42px auto}
+ .month-nav .month{width:100%;max-width:none}
+ .month-nav .btn{padding:10px 12px}
+ .home-shell{gap:13px}.home-main,.home-side{gap:13px}
+ .greeting-card{min-height:176px;padding:22px}.daily-message-new{font-size:27px}
+ .seed-premium{min-height:178px;padding:22px}.seed-amount-new{font-size:38px;margin-bottom:28px}
+ .tree-panel{grid-template-columns:92px 1fr;padding:18px;gap:16px}
+ .tree-visual{width:90px;height:90px;border-radius:25px;font-size:51px}
+ .tree-copy h2{font-size:18px}.tree-copy p{display:none}
+ .metric-grid{grid-template-columns:1fr 1fr;gap:10px}.metric-card{padding:15px}
+ .metric-card b{font-size:21px}
+ .home-side{grid-template-columns:1fr}
+ .execution-layout{grid-template-columns:105px 1fr}
+ .action-card,.task-card,.quick-card,.health-compact{padding:18px}
+}
+@media(max-width:410px){
+ .brand-copy p{display:none}.month-nav{grid-template-columns:38px minmax(0,1fr) 38px}
+ .month-nav .btn{grid-column:1/-1;width:100%}
+ .daily-message-new{font-size:24px}.seed-amount-new{font-size:34px}
+ .tree-panel{grid-template-columns:1fr;text-align:center}.tree-visual{margin:auto}.tree-meta{justify-content:center}
+ .execution-layout{grid-template-columns:1fr}.quick-actions{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body><div id="brandSplash" role="status" aria-label="正在開啟 Dream Tree"><div class="splash-inner"><img class="splash-logo" src="icon-512.png" alt=""><div class="splash-title">Dream Tree</div><div class="splash-en">MONEY PLANNER</div><div class="splash-tagline">把每一筆資金，種成想要的未來。</div></div></div>
@@ -105,26 +236,88 @@ body{background:radial-gradient(circle at 15% 0,#e4f7ff 0,transparent 34%),linea
 <header class="top"><div class="brand"><img class="brand-logo" src="brand-logo.png" alt="樹苗金幣 Logo"><div class="brand-copy"><h1>Dream Tree</h1><span class="brand-en">資金規劃系統</span><p id="headerMessage">每一筆資金，都是一顆種子。</p></div></div><div class="month-nav"><button class="icon" onclick="shiftMonth(-1)" aria-label="上個月">‹</button><input class="month" type="month" id="monthPicker"><button class="icon" onclick="shiftMonth(1)" aria-label="下個月">›</button><button class="btn soft" onclick="createNextMonth()">建立新月份</button></div></header>
 
 <section id="home" class="page active">
-<div class="v5-welcome">
-  <div class="welcome-card">
-    <span class="eyebrow">🌱 今日成長訊息</span>
-    <div class="daily-message" id="dailyMessage">今天，想種下什麼？</div>
-    <div class="daily-note" id="dailyDate">每天都有一點新成長</div>
+<div class="home-shell">
+  <div class="home-main">
+    <div class="premium-card greeting-card">
+      <span class="eyebrow-new">🌱 今日成長訊息</span>
+      <div class="daily-message-new" id="dailyMessage">今天，想種下什麼？</div>
+      <div class="daily-note-new" id="dailyDate">每天都有一點新成長</div>
+    </div>
+
+    <div class="premium-card tree-panel">
+      <div class="tree-visual" id="treeVisual">🌱</div>
+      <div class="tree-copy">
+        <h2 id="treeTitle">你的夢想正在發芽</h2>
+        <p id="treeText">完成規劃、執行轉帳與月底清算，夢想樹就會一步步長大。</p>
+        <div class="tree-meta">
+          <span class="tree-chip" id="treeStage">階段 1・種子</span>
+          <span class="tree-chip" id="treeGoals">0 個夢想</span>
+          <span class="tree-chip" id="treeDone">0% 本月進度</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric-card"><small>預計總收入</small><b id="hIncome">NT$0</b></div>
+      <div class="metric-card"><small>已入帳</small><b id="hReceived">NT$0</b></div>
+      <div class="metric-card"><small>預計總支出</small><b id="hExpense">NT$0</b></div>
+      <div class="metric-card"><small>已付款</small><b id="hPaid">NT$0</b></div>
+      <b id="hFree">NT$0</b>
+    </div>
+
+    <div class="premium-card action-card">
+      <div class="section-heading"><h2>本月執行率</h2><span class="subtle" id="homeStatus">尚未確認</span></div>
+      <div class="execution-layout">
+        <div class="ring" id="ring"><b id="ringText">0%</b></div>
+        <div class="execution-copy">
+          <div class="execution-stat"><span>本月整體進度</span><b id="executionProgressText">持續成長中</b></div>
+          <div class="progress"><span id="homeBar"></span></div>
+          <button class="btn soft" onclick="showPage('flow')">查看資金流程</button>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="seed-card">
-    <div><div class="seed-label">今天可種下的資金</div><div class="seed-amount" id="v5Free">NT$0</div></div>
-    <div class="seed-caption">用在儲蓄、投資與你真正想完成的事。</div>
+
+  <div class="home-side">
+    <div class="premium-card seed-premium">
+      <div>
+        <div class="seed-label-new">今天可種下的資金</div>
+        <div class="seed-amount-new" id="v5Free">NT$0</div>
+      </div>
+      <div class="seed-slogan">下一個夢想，準備發芽。</div>
+      <div class="seed-mark">🌱</div>
+    </div>
+
+    <div class="premium-card task-card">
+      <div class="section-heading">
+        <h2>今天待完成</h2>
+        <button class="btn soft" onclick="showPage('flow')">查看流程</button>
+      </div>
+      <div id="homeTasks"></div>
+    </div>
+
+    <div class="premium-card quick-card">
+      <div class="section-heading"><h2>快速開始</h2><span class="subtle">今天想做什麼？</span></div>
+      <div class="quick-actions">
+        <button class="quick-action" onclick="showPage('plan')"><b>＋ 規劃資金</b><small>安排收入與目標</small></button>
+        <button class="quick-action" onclick="showPage('accounts')"><b>▣ 查看帳戶</b><small>掌握目前餘額</small></button>
+        <button class="quick-action" onclick="showPage('flow')"><b>✓ 執行轉帳</b><small>完成本月分配</small></button>
+        <button class="quick-action" onclick="showPage('reconcile')"><b>≋ 月底清算</b><small>核對實際餘額</small></button>
+      </div>
+    </div>
+
+    <div class="premium-card health-compact">
+      <div class="section-heading"><h2>資金健康</h2><span class="badge" id="healthLabel">尚未檢查</span></div>
+      <div class="health-row">
+        <div class="health-score" id="healthScore">--</div>
+        <div class="muted">確認本月規劃後，系統會檢查資金分配與轉帳安排。</div>
+      </div>
+      <div class="health-list" id="healthList"></div>
+    </div>
+
+    <div style="display:none" id="homeSummary"></div>
   </div>
 </div>
-<div class="card dream-tree-card" style="margin-bottom:16px">
-  <div class="tree-visual" id="treeVisual">🌱</div>
-  <div class="tree-copy"><h2 id="treeTitle">你的夢想正在發芽</h2><p id="treeText">完成規劃、執行轉帳與月底清算，夢想樹就會一步步長大。</p><div class="tree-meta"><span class="tree-chip" id="treeStage">階段 1・種子</span><span class="tree-chip" id="treeGoals">0 個夢想</span><span class="tree-chip" id="treeDone">0% 本月進度</span></div></div>
-</div>
-<div class="grid kpis">
-<div class="card kpi"><small>預計總收入</small><b id="hIncome">NT$0</b></div><div class="card kpi"><small>已入帳</small><b id="hReceived">NT$0</b></div><div class="card kpi"><small>預計總支出</small><b id="hExpense">NT$0</b></div><div class="card kpi"><small>已付款</small><b id="hPaid">NT$0</b></div><div class="card kpi hero"><small>可規劃資金</small><b id="hFree">NT$0</b></div>
-</div>
-<div class="grid two" style="margin-top:14px"><div class="card"><div class="title"><h2>本月執行率</h2><span class="sub" id="homeStatus">尚未確認</span></div><div class="ring" id="ring"><b id="ringText">0%</b></div><div class="progress" style="margin-top:15px"><span id="homeBar"></span></div></div><div class="card"><div class="title"><h2>今天待完成</h2><button class="btn soft" onclick="showPage('flow')">查看流程</button></div><div id="homeTasks"></div></div></div>
-<div class="grid two" style="margin-top:14px"><div class="card"><div class="title"><h2>本月資金摘要</h2><button class="btn" onclick="showPage('plan')">開始規劃</button></div><div id="homeSummary"></div></div><div class="card"><div class="title"><h2>資金健康檢查</h2><span class="badge" id="healthLabel">尚未檢查</span></div><div style="display:flex;gap:18px;align-items:center"><div class="health-score" id="healthScore">--</div><div class="muted">確認本月規劃後，系統會檢查資金分配與轉帳安排。</div></div><div class="health-list" id="healthList"></div></div></div>
 </section>
 <section id="plan" class="page">
 <details class="plan-section"><summary><div><div>1. 基本資金</div><div class="summary-note" id="basicSummary">逐筆輸入收入與支出</div></div></summary><div class="section-body">
@@ -153,7 +346,7 @@ body{background:radial-gradient(circle at 15% 0,#e4f7ff 0,transparent 34%),linea
 <div class="card" style="margin-top:14px"><div class="title"><h2>本月清算調整紀錄</h2><span class="badge" id="adjustmentCount">0 筆</span></div><div id="adjustmentRows"></div></div>
 </section>
 </div>
-<div class="brand-footer"><img src="brand-logo.png" alt="">Dream Tree · 資金規劃系統 <span class="v5-version">V5.0</span></div><nav class="nav"><button class="active" data-page="home" onclick="showPage('home')"><span>⌂</span>首頁</button><button data-page="plan" onclick="showPage('plan')"><span>＄</span>規劃</button><button data-page="accounts" onclick="showPage('accounts')"><span>▣</span>帳戶</button><button data-page="flow" onclick="showPage('flow')"><span>✓</span>轉帳</button><button data-page="reconcile" onclick="showPage('reconcile')"><span>≋</span>清算</button></nav>
+<div class="brand-footer"><img src="brand-logo.png" alt="">Dream Tree · 資金規劃系統 <span class="v5-version">V5.0 Premium</span></div><nav class="nav"><button class="active" data-page="home" onclick="showPage('home')"><span>⌂</span>首頁</button><button data-page="plan" onclick="showPage('plan')"><span>＄</span>規劃</button><button data-page="accounts" onclick="showPage('accounts')"><span>▣</span>帳戶</button><button data-page="flow" onclick="showPage('flow')"><span>✓</span>轉帳</button><button data-page="reconcile" onclick="showPage('reconcile')"><span>≋</span>清算</button></nav>
 <script>
 const KEY='moneyPlannerV25';const $=id=>document.getElementById(id);const uid=()=>Math.random().toString(36).slice(2,10);const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));const money=n=>'NT$ '+Math.round(Number(n||0)).toLocaleString('zh-TW');
 let app=JSON.parse(localStorage.getItem(KEY)||'null')||{month:new Date().toISOString().slice(0,7),accounts:[{id:'a1',name:'國泰薪資帳戶',free:false,relay:false,freeCount:0,balance:0},{id:'a2',name:'iLEO',free:true,relay:true,freeCount:99,balance:0},{id:'a3',name:'Line Pay',free:false,relay:false,freeCount:0,balance:0},{id:'a4',name:'證券戶',free:false,relay:false,freeCount:0,balance:0}],months:{}};
