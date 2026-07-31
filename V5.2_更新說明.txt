@@ -1,0 +1,16 @@
+Dream Tree V5.2 Brand Experience
+
+本版調整：
+- KPI 卡片改為指定的第一種：圖示、項目名稱、金額、完成比例／狀態
+- 首頁資訊層級重新整理
+- Dream Tree 加入葉片搖曳與進場動畫
+- 加入我的夢想進度卡
+- 加入我的森林
+- 加入夢想時間軸
+- 收入、支出、付款、入帳使用不同品牌輔助色
+- Header Logo 增加發芽進場動畫
+- Bottom Navigation 中央操作加強
+- 保留所有原有功能與資料
+
+部署：
+將此資料夾全部檔案覆蓋到 GitHub Repository 根目錄。
