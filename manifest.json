@@ -1,0 +1,26 @@
+{
+  "name": "Dream Tree｜資金規劃系統",
+  "short_name": "Dream Tree",
+  "description": "把每一筆資金種成想要的未來。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F5FBFF",
+  "theme_color": "#78CFFF",
+  "lang": "zh-TW",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

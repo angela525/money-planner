@@ -3,23 +3,123 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>資金規劃系統 V3－完整月循環版</title>
+<title>Dream Tree｜資金規劃系統</title>
+<meta name="theme-color" content="#1677BD">
+<meta name="description" content="把每一筆資金種成想要的未來。Dream Tree 資金規劃系統。">
+<meta name="application-name" content="Dream Tree">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Dream Tree">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--sky:#4aa8ff;--sky2:#8bd4ff;--soft:#edf8ff;--bg:#f7fbff;--card:#fff;--ink:#17324d;--muted:#71859a;--line:#dcecf8;--ok:#4ebd87;--warn:#f4ad42;--bad:#ef6b6b;--shadow:0 10px 28px rgba(62,145,205,.12)}
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",Arial,sans-serif;background:linear-gradient(180deg,#eef9ff 0,#f9fcff 280px);color:var(--ink)}button,input,select{font:inherit}.app{max-width:1080px;margin:auto;padding:18px 16px 98px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.brand h1{margin:0;font-size:25px}.brand p{margin:5px 0 0;color:var(--muted);font-size:13px}.month{border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 12px;color:var(--ink)}.month-nav{display:flex;align-items:center;gap:6px}.month-nav .icon{min-width:42px}.history-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.balance-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}.balance-cell{background:var(--soft);border-radius:12px;padding:10px}.balance-cell small{display:block;color:var(--muted);font-size:11px}.adjustment{border-left:3px solid var(--sky);padding:10px 12px;background:#f5fbff;border-radius:0 12px 12px 0;margin:8px 0}.cash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.cash-item{display:grid;grid-template-columns:1fr .8fr;gap:6px;align-items:center}.backup-box{display:flex;gap:9px;flex-wrap:wrap}.file-label{display:inline-flex;align-items:center;justify-content:center;background:var(--soft);color:#2377bd;border-radius:13px;padding:12px 15px;font-weight:750;min-height:46px;cursor:pointer}.file-label input{display:none}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",Arial,sans-serif;background:linear-gradient(180deg,#eef9ff 0,#f9fcff 280px);color:var(--ink)}button,input,select{font:inherit}.app{max-width:1080px;margin:auto;padding:18px 16px 98px}.top{display:flex;flex-direction:column;align-items:stretch;gap:12px;margin-bottom:16px}.brand{width:100%}.brand h1{white-space:nowrap}.month-nav{width:100%;display:flex;align-items:center;justify-content:center;gap:8px}.month-nav .month{flex:1;min-width:0;max-width:220px}.month-nav .btn{white-space:nowrap;flex:0 0 auto}.brand h1{margin:0;font-size:25px}.brand p{margin:5px 0 0;color:var(--muted);font-size:13px}.month{border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 12px;color:var(--ink)}.month-nav .icon{min-width:42px;flex:0 0 42px}.history-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.balance-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}.balance-cell{background:var(--soft);border-radius:12px;padding:10px}.balance-cell small{display:block;color:var(--muted);font-size:11px}.adjustment{border-left:3px solid var(--sky);padding:10px 12px;background:#f5fbff;border-radius:0 12px 12px 0;margin:8px 0}.cash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.cash-item{display:grid;grid-template-columns:1fr .8fr;gap:6px;align-items:center}.backup-box{display:flex;gap:9px;flex-wrap:wrap}.file-label{display:inline-flex;align-items:center;justify-content:center;background:var(--soft);color:#2377bd;border-radius:13px;padding:12px 15px;font-weight:750;min-height:46px;cursor:pointer}.file-label input{display:none}
 .page{display:none}.page.active{display:block}.grid{display:grid;gap:14px}.kpis{grid-template-columns:repeat(5,1fr)}.two{grid-template-columns:1fr 1fr}.card{background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow)}.kpi small{color:var(--muted)}.kpi b{display:block;font-size:25px;margin-top:8px}.hero{background:linear-gradient(135deg,var(--sky),var(--sky2));color:#fff;border:0}.title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}.title h2{font-size:18px;margin:0}.sub{font-size:12px;color:var(--muted)}
 .btn{border:0;background:var(--sky);color:#fff;border-radius:13px;padding:12px 15px;font-weight:750;min-height:46px;cursor:pointer}.btn.soft{background:var(--soft);color:#2377bd}.btn.ghost{background:#f2f7fb;color:#5b7085}.btn.red{background:#fff0f0;color:#c44}.btn:disabled{opacity:.5}.actions{display:flex;gap:9px;flex-wrap:wrap}.field{margin-bottom:12px}.field label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}.field input,.field select{width:100%;border:1px solid var(--line);background:#fff;border-radius:13px;padding:12px;color:var(--ink);min-height:46px}.icon{border:0;background:#f2f7fb;color:#60758a;border-radius:11px;padding:10px;cursor:pointer}
 .plan-section,.inner-section{background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}.inner-section{box-shadow:none;border-radius:16px;margin:10px 0}.plan-section summary,.inner-section summary{list-style:none;cursor:pointer;padding:17px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:800}.inner-section summary{padding:14px 15px}.plan-section summary::-webkit-details-marker,.inner-section summary::-webkit-details-marker{display:none}.plan-section summary:after,.inner-section summary:after{content:"⌄";font-size:20px;color:var(--sky);transition:.2s}.plan-section[open]>summary:after,.inner-section[open]>summary:after{transform:rotate(180deg)}.plan-section[open]>summary,.inner-section[open]>summary{border-bottom:1px solid var(--line)}.section-body{padding:16px 18px 18px}.inner-body{padding:14px 15px}.summary-note{font-size:12px;color:var(--muted);font-weight:500;margin-top:3px}
 .fund-row{display:grid;grid-template-columns:.85fr 1.15fr .8fr 1fr .8fr auto;gap:8px;align-items:center;margin:9px 0}.goalrow{display:grid;grid-template-columns:1.15fr .7fr .7fr .8fr .8fr .8fr 1fr auto;gap:8px;align-items:center;margin:9px 0}.allocrow{display:grid;grid-template-columns:1.2fr .8fr 1fr auto;gap:8px;align-items:center;margin:9px 0}.fund-row input,.fund-row select,.goalrow input,.goalrow select,.allocrow input,.allocrow select{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff;min-width:0}.totals{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin:12px 0}.total-box{padding:12px;border-radius:14px;background:var(--soft)}.total-box small{display:block;color:var(--muted);margin-bottom:4px}.total-box b{font-size:17px}.notice{padding:12px 14px;border-radius:14px;background:#eaf9f2;color:#16704e;font-size:13px}.notice.warn{background:#fff6e8;color:#8a6017}.notice.bad{background:#fff0f0;color:#a43838}.line{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px dashed var(--line)}.line:last-child{border:0}.line small{display:block;color:var(--muted);margin-top:3px}.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:var(--soft);color:#2377bd;font-size:11px}.badge.ok{background:#e9f8f0;color:#1b7953}.badge.warn{background:#fff4df;color:#8a6017}.badge.bad{background:#fff0f0;color:#a43838}.muted{color:var(--muted)}.empty{text-align:center;color:var(--muted);padding:22px}.locked{opacity:.72}
 .progress{height:12px;background:#eaf2f8;border-radius:99px;overflow:hidden}.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--sky),#83d0ff);width:0}.ring{width:112px;height:112px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--sky) 0%,#e9f3fa 0);position:relative;margin:auto}.ring:after{content:"";position:absolute;inset:11px;background:#fff;border-radius:50%}.ring b{position:relative;z-index:1;font-size:23px}.account{border:1px solid var(--line);border-radius:17px;padding:14px;margin:9px 0;background:#fff}.account-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.mini-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}.switch{display:flex;align-items:center;gap:8px}.switch input{width:20px;height:20px}.flow{display:flex;flex-direction:column;align-items:stretch;gap:9px}.flow-node{border:1px solid var(--line);background:#fff;border-radius:16px;padding:13px 15px}.flow-node.primary{border-color:#9ed7ff;background:#eef9ff}.flow-arrow{text-align:center;color:#87a5bc;font-size:21px}.branch{margin-left:28px;border-left:2px solid #cce9fa;padding-left:14px;display:grid;gap:8px}.transfer{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:15px;padding:12px;background:#fff}.transfer input{width:21px;height:21px}.transfer .grow{flex:1}.health-score{font-size:44px;font-weight:850;color:var(--sky);line-height:1}.health-list{display:grid;gap:8px;margin-top:12px}.health-item{padding:11px 12px;border-radius:13px;background:#f5faff}.reconcile-row{display:grid;grid-template-columns:1.1fr 1fr 1fr .9fr 1.3fr;gap:9px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.reconcile-row input{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px;min-width:0}.diff-pos{color:#16704e}.diff-neg{color:#a43838}.close-banner{padding:16px;border-radius:17px;background:linear-gradient(135deg,#eaf8ff,#f7fcff);border:1px solid #bfe3fa;margin-bottom:14px}.nav{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:min(680px,calc(100% - 24px));background:rgba(255,255,255,.96);backdrop-filter:blur(14px);border:1px solid var(--line);box-shadow:0 12px 34px rgba(42,114,165,.18);border-radius:20px;padding:7px;display:grid;grid-template-columns:repeat(5,1fr);z-index:30}.nav button{border:0;background:transparent;border-radius:14px;padding:9px 3px;color:#71859a;font-size:12px;font-weight:750}.nav button span{display:block;font-size:20px;margin-bottom:2px}.nav button.active{background:var(--soft);color:#1677bd}
-@media(max-width:900px){.balance-grid{grid-template-columns:repeat(2,1fr)}.cash-grid{grid-template-columns:repeat(2,1fr)}.kpis{grid-template-columns:repeat(3,1fr)}.two{grid-template-columns:1fr}.fund-row{grid-template-columns:1fr 1fr}.fund-row .wide{grid-column:1/-1}.goalrow{grid-template-columns:1fr 1fr}.goalrow .wide{grid-column:1/-1}.allocrow{grid-template-columns:1fr 1fr}.allocrow .wide{grid-column:1/-1}.totals{grid-template-columns:repeat(3,1fr)}.mini-grid{grid-template-columns:1fr}}
-@media(max-width:560px){.month-nav{width:100%;justify-content:flex-end}.history-row{grid-template-columns:1fr}.balance-grid,.cash-grid{grid-template-columns:1fr}.app{padding:14px 12px 92px}.brand h1{font-size:22px}.brand p{display:none}.month{max-width:145px}.kpis{grid-template-columns:1fr 1fr;gap:10px}.card{border-radius:18px;padding:15px}.kpi b{font-size:21px}.hero{grid-column:1/-1}.actions .btn{flex:1}.fund-row,.goalrow,.allocrow,.reconcile-row{grid-template-columns:1fr}.fund-row .wide,.goalrow .wide,.allocrow .wide{grid-column:auto}.totals{grid-template-columns:1fr 1fr}.top{align-items:flex-start}.nav{bottom:8px}.title{align-items:flex-start}.plan-section summary{padding:15px}.section-body{padding:14px}.line{align-items:flex-start}.health-score{font-size:38px}}
+
+/* A版：現代清爽字體 */
+body{--font-zh:"Noto Sans TC",sans-serif;--font-num:"Inter",sans-serif;--title-weight:800;--body-spacing:.01em;font-family:var(--font-zh);letter-spacing:var(--body-spacing)}
+body button,body input,body select{font-family:var(--font-zh);letter-spacing:inherit}
+.brand h1,.title h2,.plan-section summary,.inner-section summary,.health-score{font-family:var(--font-zh);font-weight:var(--title-weight)}
+.kpi b,.hero b,.total-box b,.balance-cell b,.ring b,.month,.money-number{font-family:var(--font-num);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+@media(max-width:560px){.top{gap:10px}.brand h1{font-size:24px;line-height:1.2;white-space:nowrap}.brand p{display:none}.month-nav{display:grid;grid-template-columns:36px minmax(0,1fr) 36px auto;gap:6px;width:100%;justify-content:stretch}.month-nav .icon{min-width:36px;width:36px;height:44px;padding:0}.month-nav .month{width:100%;max-width:none;height:44px;padding:8px 9px;font-size:16px}.month-nav .btn{min-height:44px;padding:8px 10px;border-radius:12px;font-size:14px;white-space:nowrap}.history-row{grid-template-columns:1fr}.balance-grid,.cash-grid{grid-template-columns:1fr}.app{padding:14px 12px 92px}.kpis{grid-template-columns:1fr 1fr;gap:10px}.card{border-radius:18px;padding:15px}.kpi b{font-size:21px}.hero{grid-column:1/-1}.actions .btn{flex:1}.fund-row,.goalrow,.allocrow,.reconcile-row{grid-template-columns:1fr}.fund-row .wide,.goalrow .wide,.allocrow .wide{grid-column:auto}.totals{grid-template-columns:1fr 1fr}.nav{bottom:8px}.title{align-items:flex-start}.plan-section summary{padding:15px}.section-body{padding:14px}.line{align-items:flex-start}.health-score{font-size:38px}}
+@media(max-width:380px){.month-nav{grid-template-columns:34px minmax(0,1fr) 34px auto;gap:4px}.month-nav .icon{min-width:34px;width:34px}.month-nav .btn{padding:8px 7px;font-size:13px}.month-nav .month{font-size:15px;padding:7px 6px}}
+
+/* ===== V4 品牌規範：樹苗金幣 ===== */
+:root{
+  --brand-blue-900:#0B3E66;--brand-blue-700:#12639A;--brand-blue-600:#1677BD;
+  --brand-blue-500:#2B91D0;--brand-blue-300:#8ED2F2;--brand-blue-100:#EAF7FD;
+  --brand-green-600:#278B56;--brand-green-100:#EAF8F0;
+  --brand-gold-600:#C99119;--brand-gold-100:#FFF6DA;
+  --neutral-900:#16334A;--neutral-700:#4E687C;--neutral-500:#7A8E9E;
+  --neutral-200:#DDEAF2;--neutral-100:#F3F8FB;--surface:#FFFFFF;
+  --space-1:8px;--space-2:16px;--space-3:24px;--space-4:32px;--space-5:40px;
+  --radius-sm:12px;--radius-md:16px;--radius-lg:24px;--radius-pill:999px;
+  --shadow-card:0 8px 24px rgba(21,98,151,.09);--shadow-float:0 16px 40px rgba(21,98,151,.16);
+  --sky:var(--brand-blue-600);--sky2:var(--brand-blue-300);--soft:var(--brand-blue-100);
+  --bg:#F7FBFD;--card:var(--surface);--ink:var(--neutral-900);--muted:var(--neutral-500);
+  --line:var(--neutral-200);--ok:var(--brand-green-600);--warn:var(--brand-gold-600);
+  --shadow:var(--shadow-card)
+}
+html{background:var(--bg)}
+body{background:linear-gradient(180deg,#EAF7FD 0,#F7FBFD 320px);font-family:"Noto Sans TC",sans-serif}
+.app{max-width:1180px;padding:var(--space-3) var(--space-2) 112px}
+.top{background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border:1px solid rgba(221,234,242,.9);box-shadow:var(--shadow-card);border-radius:var(--radius-lg);padding:var(--space-2);margin-bottom:var(--space-3);display:grid;grid-template-columns:minmax(280px,1fr) auto;align-items:center;gap:var(--space-2)}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}.brand-logo{width:56px;height:56px;border-radius:15px;box-shadow:0 6px 18px rgba(21,98,151,.14);flex:0 0 auto}.brand-copy{min-width:0}.brand h1{font-size:23px;line-height:1.2;letter-spacing:.01em}.brand-en{display:block;margin-top:3px;font:600 11px/1.2 "Inter",sans-serif;letter-spacing:.12em;color:var(--brand-blue-600);text-transform:uppercase}.brand p{margin-top:5px}
+.month-nav{width:auto}.month-nav .month{border-radius:var(--radius-sm);font-weight:700}.month-nav .icon{background:var(--neutral-100);color:var(--brand-blue-700)}
+.card,.plan-section{border-radius:var(--radius-lg);border:1px solid rgba(221,234,242,.95);box-shadow:var(--shadow-card)}
+.inner-section{border-radius:var(--radius-md)}
+.card:hover{box-shadow:0 12px 30px rgba(21,98,151,.12)}
+.kpis{gap:var(--space-2)}.kpi{position:relative;overflow:hidden}.kpi small{font-weight:600}.kpi b{font-size:27px}.kpi:not(.hero):before{content:"";position:absolute;left:0;top:0;width:5px;height:100%;background:var(--brand-blue-300)}
+.hero{background:linear-gradient(135deg,var(--brand-blue-700),var(--brand-blue-500));box-shadow:0 12px 28px rgba(22,119,189,.22)}
+.title h2{letter-spacing:.01em}.sub{font-weight:500}
+.btn{border-radius:var(--radius-sm);min-height:48px;padding:12px 17px;background:var(--brand-blue-600);box-shadow:0 5px 12px rgba(22,119,189,.15);transition:transform .15s ease,box-shadow .15s ease,background .15s ease}.btn:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(22,119,189,.2);background:var(--brand-blue-700)}.btn:active{transform:translateY(0)}.btn.soft{background:var(--brand-blue-100);color:var(--brand-blue-700);box-shadow:none}.btn.ghost{background:var(--neutral-100);color:var(--neutral-700);box-shadow:none}.btn.red{box-shadow:none}
+.field input,.field select,.fund-row input,.fund-row select,.goalrow input,.goalrow select,.allocrow input,.allocrow select,.reconcile-row input{border-radius:var(--radius-sm);transition:border-color .15s ease,box-shadow .15s ease}.field input:focus,.field select:focus,.fund-row input:focus,.fund-row select:focus,.goalrow input:focus,.goalrow select:focus,.allocrow input:focus,.allocrow select:focus,.reconcile-row input:focus{outline:none;border-color:var(--brand-blue-500);box-shadow:0 0 0 4px rgba(43,145,208,.12)}
+.badge{font-weight:700}.badge.ok{background:var(--brand-green-100);color:var(--brand-green-600)}.badge.warn{background:var(--brand-gold-100);color:#8A6511}
+.nav{border-radius:22px;padding:8px;box-shadow:var(--shadow-float)}.nav button{min-height:58px}.nav button.active{background:linear-gradient(180deg,#EAF7FD,#DDF2FC);color:var(--brand-blue-700)}
+.brand-mark-inline{width:22px;height:22px;border-radius:6px;vertical-align:-5px;margin-right:7px}
+.brand-footer{text-align:center;color:var(--neutral-500);font-size:12px;margin:var(--space-4) 0 0}.brand-footer img{width:24px;height:24px;border-radius:7px;vertical-align:middle;margin-right:6px}
+/* 啟動畫面 */
+#brandSplash{position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,#EAF7FD,#FFFFFF 62%);display:grid;place-items:center;transition:opacity .38s ease,visibility .38s ease}#brandSplash.hide{opacity:0;visibility:hidden}.splash-inner{text-align:center;padding:32px}.splash-logo{width:126px;height:126px;border-radius:30px;box-shadow:0 18px 44px rgba(21,98,151,.2);animation:splashPop .55s cubic-bezier(.2,.8,.2,1)}.splash-title{font-size:25px;font-weight:800;margin-top:18px}.splash-en{font:600 12px "Inter",sans-serif;letter-spacing:.18em;color:var(--brand-blue-600);margin-top:6px}.splash-tagline{color:var(--neutral-500);font-size:13px;margin-top:15px}@keyframes splashPop{from{transform:scale(.84);opacity:0}to{transform:scale(1);opacity:1}}
+@media(min-width:761px){.top{position:sticky;top:12px;z-index:25}.brand-logo{width:60px;height:60px}.grid.two{gap:var(--space-2)}}
+@media(max-width:760px){.app{padding:12px 12px 100px}.top{position:relative;display:flex;flex-direction:column;align-items:stretch;padding:12px;border-radius:20px;gap:10px}.brand{justify-content:flex-start}.brand-logo{width:48px;height:48px;border-radius:13px}.brand h1{font-size:21px}.brand-en{font-size:9px}.brand p{display:none}.month-nav{width:100%}.card{padding:16px}.kpis{gap:10px}.kpi b{font-size:22px}.nav button span{font-size:19px}}
+@media(max-width:390px){.brand-logo{width:44px;height:44px}.brand h1{font-size:19px}.brand-en{letter-spacing:.09em}.month-nav .btn{font-size:12px;padding:8px 6px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+
+/* ===== Dream Tree V5.0 Premium ===== */
+:root{--dt-blue:#78cfff;--dt-blue-strong:#45b6f4;--dt-blue-soft:#eaf8ff;--dt-green:#63c985;--dt-gold:#f4c34f;--dt-navy:#173552;--dt-surface:#ffffff;--dt-shadow:0 16px 42px rgba(58,139,195,.13)}
+body{background:radial-gradient(circle at 15% 0,#e4f7ff 0,transparent 34%),linear-gradient(180deg,#f5fbff 0,#fbfdff 100%)}
+.app{max-width:1160px}
+.top{background:rgba(255,255,255,.82);border:1px solid rgba(191,225,245,.85);box-shadow:0 10px 28px rgba(50,126,177,.09);backdrop-filter:blur(18px);padding:14px 16px;border-radius:24px}
+.brand h1{font-size:23px}.brand-en{color:#2d92c8}.brand p{font-size:12px}.brand-logo{box-shadow:0 8px 22px rgba(55,145,201,.18)}
+.v5-welcome{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.75fr);gap:16px;margin-bottom:16px}
+.welcome-card{position:relative;overflow:hidden;background:linear-gradient(135deg,#fafdff 0,#eaf8ff 58%,#d9f2ff 100%);border:1px solid #ccecff;border-radius:28px;padding:26px;box-shadow:var(--dt-shadow);min-height:214px}
+.welcome-card:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-70px;top:-90px;background:rgba(255,255,255,.56)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:#247eae;background:rgba(255,255,255,.78);border:1px solid #d5effc;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;position:relative;z-index:1}
+.daily-message{font-size:30px;line-height:1.35;margin:18px 0 8px;max-width:590px;position:relative;z-index:1;letter-spacing:-.02em}.daily-note{color:#658196;font-size:13px;position:relative;z-index:1}
+.seed-card{background:linear-gradient(145deg,#82d6ff,#5fc4f7);color:white;border:0;border-radius:28px;padding:24px;box-shadow:0 18px 42px rgba(50,158,216,.24);display:flex;flex-direction:column;justify-content:space-between;min-height:214px;position:relative;overflow:hidden}
+.seed-card:after{content:"🌱";position:absolute;right:12px;bottom:-20px;font-size:112px;opacity:.13;transform:rotate(-8deg)}.seed-label{font-size:13px;font-weight:700;opacity:.92}.seed-amount{font-family:var(--font-num);font-size:38px;font-weight:800;letter-spacing:-.04em;margin-top:10px;position:relative;z-index:1}.seed-caption{font-size:12px;opacity:.92;position:relative;z-index:1}
+.dream-tree-card{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:18px}.tree-visual{width:136px;height:136px;border-radius:32px;background:linear-gradient(180deg,#effbf2,#e5f7eb);display:grid;place-items:center;font-size:74px;box-shadow:inset 0 0 0 1px #d6efde}.tree-copy h2{margin:0 0 7px;font-size:21px}.tree-copy p{margin:0;color:var(--muted);font-size:13px;line-height:1.75}.tree-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.tree-chip{padding:7px 10px;border-radius:999px;background:#edf9f1;color:#28764a;font-size:11px;font-weight:800}
+.kpis{grid-template-columns:repeat(4,1fr)}.kpis .hero{display:none}.kpi{border-radius:20px}.kpi small{font-weight:700}.kpi b{font-size:24px}.kpi:nth-child(1){border-top:4px solid #71cfff}.kpi:nth-child(2){border-top:4px solid #69c58a}.kpi:nth-child(3){border-top:4px solid #f1b655}.kpi:nth-child(4){border-top:4px solid #8aa6bd}
+.card{border-radius:24px;box-shadow:var(--dt-shadow)}.title h2{letter-spacing:-.01em}.btn{box-shadow:0 6px 16px rgba(58,151,207,.13)}
+.nav button span{font-family:inherit}.brand-footer{margin-top:24px}.v5-version{display:inline-block;margin-left:6px;padding:3px 7px;border-radius:999px;background:#eaf8ff;color:#247eae;font-size:10px;font-weight:800}
+@media(max-width:760px){.v5-welcome{grid-template-columns:1fr}.welcome-card,.seed-card{min-height:auto}.daily-message{font-size:25px}.seed-amount{font-size:34px}.dream-tree-card{grid-template-columns:100px 1fr}.tree-visual{width:96px;height:96px;border-radius:25px;font-size:53px}.kpis{grid-template-columns:1fr 1fr}.top{padding:12px}.brand-en{display:block}}
+@media(max-width:390px){.daily-message{font-size:22px}.welcome-card,.seed-card{padding:20px}.dream-tree-card{grid-template-columns:1fr}.tree-visual{margin:auto}}
+
 </style>
 </head>
-<body>
+<body><div id="brandSplash" role="status" aria-label="正在開啟 Dream Tree"><div class="splash-inner"><img class="splash-logo" src="icon-512.png" alt=""><div class="splash-title">Dream Tree</div><div class="splash-en">MONEY PLANNER</div><div class="splash-tagline">把每一筆資金，種成想要的未來。</div></div></div>
 <div class="app">
-<header class="top"><div class="brand"><h1>資金規劃系統</h1><p>先規劃每一筆錢，再開始生活。</p></div><div class="month-nav"><button class="icon" onclick="shiftMonth(-1)" aria-label="上個月">‹</button><input class="month" type="month" id="monthPicker"><button class="icon" onclick="shiftMonth(1)" aria-label="下個月">›</button><button class="btn soft" onclick="createNextMonth()">建立新月份</button></div></header>
+<header class="top"><div class="brand"><img class="brand-logo" src="brand-logo.png" alt="樹苗金幣 Logo"><div class="brand-copy"><h1>Dream Tree</h1><span class="brand-en">資金規劃系統</span><p id="headerMessage">每一筆資金，都是一顆種子。</p></div></div><div class="month-nav"><button class="icon" onclick="shiftMonth(-1)" aria-label="上個月">‹</button><input class="month" type="month" id="monthPicker"><button class="icon" onclick="shiftMonth(1)" aria-label="下個月">›</button><button class="btn soft" onclick="createNextMonth()">建立新月份</button></div></header>
+
 <section id="home" class="page active">
+<div class="v5-welcome">
+  <div class="welcome-card">
+    <span class="eyebrow">🌱 今日成長訊息</span>
+    <div class="daily-message" id="dailyMessage">今天，想種下什麼？</div>
+    <div class="daily-note" id="dailyDate">每天都有一點新成長</div>
+  </div>
+  <div class="seed-card">
+    <div><div class="seed-label">今天可種下的資金</div><div class="seed-amount" id="v5Free">NT$0</div></div>
+    <div class="seed-caption">用在儲蓄、投資與你真正想完成的事。</div>
+  </div>
+</div>
+<div class="card dream-tree-card" style="margin-bottom:16px">
+  <div class="tree-visual" id="treeVisual">🌱</div>
+  <div class="tree-copy"><h2 id="treeTitle">你的夢想正在發芽</h2><p id="treeText">完成規劃、執行轉帳與月底清算，夢想樹就會一步步長大。</p><div class="tree-meta"><span class="tree-chip" id="treeStage">階段 1・種子</span><span class="tree-chip" id="treeGoals">0 個夢想</span><span class="tree-chip" id="treeDone">0% 本月進度</span></div></div>
+</div>
 <div class="grid kpis">
 <div class="card kpi"><small>預計總收入</small><b id="hIncome">NT$0</b></div><div class="card kpi"><small>已入帳</small><b id="hReceived">NT$0</b></div><div class="card kpi"><small>預計總支出</small><b id="hExpense">NT$0</b></div><div class="card kpi"><small>已付款</small><b id="hPaid">NT$0</b></div><div class="card kpi hero"><small>可規劃資金</small><b id="hFree">NT$0</b></div>
 </div>
@@ -53,7 +153,7 @@
 <div class="card" style="margin-top:14px"><div class="title"><h2>本月清算調整紀錄</h2><span class="badge" id="adjustmentCount">0 筆</span></div><div id="adjustmentRows"></div></div>
 </section>
 </div>
-<nav class="nav"><button class="active" data-page="home" onclick="showPage('home')"><span>⌂</span>首頁</button><button data-page="plan" onclick="showPage('plan')"><span>＄</span>規劃</button><button data-page="accounts" onclick="showPage('accounts')"><span>▣</span>帳戶</button><button data-page="flow" onclick="showPage('flow')"><span>✓</span>轉帳</button><button data-page="reconcile" onclick="showPage('reconcile')"><span>≋</span>清算</button></nav>
+<div class="brand-footer"><img src="brand-logo.png" alt="">Dream Tree · 資金規劃系統 <span class="v5-version">V5.0</span></div><nav class="nav"><button class="active" data-page="home" onclick="showPage('home')"><span>⌂</span>首頁</button><button data-page="plan" onclick="showPage('plan')"><span>＄</span>規劃</button><button data-page="accounts" onclick="showPage('accounts')"><span>▣</span>帳戶</button><button data-page="flow" onclick="showPage('flow')"><span>✓</span>轉帳</button><button data-page="reconcile" onclick="showPage('reconcile')"><span>≋</span>清算</button></nav>
 <script>
 const KEY='moneyPlannerV25';const $=id=>document.getElementById(id);const uid=()=>Math.random().toString(36).slice(2,10);const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));const money=n=>'NT$ '+Math.round(Number(n||0)).toLocaleString('zh-TW');
 let app=JSON.parse(localStorage.getItem(KEY)||'null')||{month:new Date().toISOString().slice(0,7),accounts:[{id:'a1',name:'國泰薪資帳戶',free:false,relay:false,freeCount:0,balance:0},{id:'a2',name:'iLEO',free:true,relay:true,freeCount:99,balance:0},{id:'a3',name:'Line Pay',free:false,relay:false,freeCount:0,balance:0},{id:'a4',name:'證券戶',free:false,relay:false,freeCount:0,balance:0}],months:{}};
@@ -97,6 +197,47 @@ function renderHome(){let m=M(),f=freeMoney();$('hIncome').textContent=money(tot
 function renderFlow(){let m=M(),ts=m.transfers||[];if(!ts.length){$('flowChart').innerHTML='<div class="empty">請先確認本月規劃</div>';$('transferList').innerHTML='<div class="empty">尚無待轉帳項目</div>';$('feeText').textContent='尚未產生';$('freeQuota').innerHTML='<div class="empty">尚無使用資料</div>';return}let salary=app.accounts.find(a=>a.id===m.salaryAccount)||app.accounts[0],relay=app.accounts.find(a=>a.relay&&a.free),usingRelay=relay&&ts.some(t=>t.to===relay.id&&t.from===salary.id);$('flowChart').innerHTML=`<div class="flow"><div class="flow-node primary"><b>${esc(salary.name)}</b><div class="muted">主要資金帳戶</div></div>${usingRelay?`<div class="flow-arrow">↓</div><div class="flow-node primary"><b>${esc(relay.name)}</b> <span class="badge ok">免手續費中轉</span></div>`:''}<div class="flow-arrow">↓</div><div class="branch">${ts.filter(t=>!(usingRelay&&t.to===relay.id)).map(t=>`<div class="flow-node"><b>${esc(accountName(t.to))}</b><div>${money(t.amount)}</div><small class="muted">${t.items.join('、')}</small></div>`).join('')}</div></div>`;let paidCount=ts.filter(t=>!t.free).length;$('feeText').textContent=paidCount?`可能付費 ${paidCount} 筆`:'預估手續費 0 元';$('feeText').className='badge '+(paidCount?'warn':'ok');$('transferList').innerHTML=ts.map(t=>`<label class="transfer"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTransfer('${t.id}',this.checked)"><div class="grow"><b>${esc(accountName(t.from))} → ${esc(accountName(t.to))}</b><div class="muted">${t.items.join('、')}</div></div><div style="text-align:right"><b>${money(t.amount)}</b><br><span class="badge ${t.free?'ok':'warn'}">${t.free?'免手續費':'可能付費'}</span></div></label>`).join('');$('transferProgress').textContent=Math.round(ts.filter(x=>x.done).length/ts.length*100)+'%';$('freeQuota').innerHTML=app.accounts.filter(a=>a.free).map(a=>{let used=ts.filter(t=>t.from===a.id&&t.free).length,limit=a.freeCount===0?'不限':a.freeCount,remain=a.freeCount===0?'不限':Math.max(0,a.freeCount-used);return`<div class="line"><span><b>${esc(a.name)}</b><small>本月已使用 ${used} 次</small></span><span>額度 ${limit}<br><small>剩餘 ${remain}</small></span></div>`}).join('')||'<div class="empty">尚未設定免手續費帳戶</div>'}
 function download(name,text,type){let b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),500)}function exportBackup(){download(`資金規劃系統備份_${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(app,null,2),'application/json')}function importBackup(file){if(!file)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!d.accounts||!d.months)throw 0;if(confirm('匯入將覆蓋目前資料，確定繼續？')){app=d;save();location.reload()}}catch(e){alert('備份檔格式不正確')}};r.readAsText(file)}function csvCell(v){return `"${String(v??'').replace(/"/g,'""')}"`}function exportReconcileCSV(){let rows=recRows(),data=[['月份','帳戶','帳面餘額','實際餘額','差額','原因'],...rows.map(r=>[app.month,accountName(r.account),r.book,r.actual,Number(r.actual)-Number(r.book),r.note])];download(`月底清算_${app.month}.csv`,'\ufeff'+data.map(r=>r.map(csvCell).join(',')).join('\n'),'text/csv;charset=utf-8')}
 function render(){let m=M();$('monthPicker').value=app.month;$('living').value=m.living;$('salaryAccount').innerHTML=opts(m.salaryAccount);$('living').onchange=e=>{if(!editable())return render();m.living=Number(e.target.value);save();render()};$('salaryAccount').onchange=e=>{if(!editable())return render();m.salaryAccount=e.target.value;save();render()};renderFundRows();renderGoals();renderAlloc();renderAccounts();$('basicIncomeTotal').textContent=money(totalIncome());$('basicReceivedTotal').textContent=money(received());$('basicExpenseTotal').textContent=money(totalExpenses());$('basicPaidTotal').textContent=money(paid());$('basicFreeTotal').textContent=money(freeMoney());$('incomeSummary').textContent=`${m.incomes.length} 筆・${money(totalIncome())}・已入帳 ${money(received())}`;$('expenseSummary').textContent=`${m.expenses.length} 筆・${money(totalExpenses())}・已付款 ${money(paid())}`;$('livingSummary').textContent=`額外生活預算 ${money(m.living)}・主要帳戶 ${accountName(m.salaryAccount)}`;$('basicSummary').textContent=`收入 ${money(totalIncome())}・支出 ${money(totalExpenses())}・可規劃 ${money(freeMoney())}`;$('goalSummary').textContent=m.goals.length?`${m.goals.length} 個目標・每月建議 ${money(m.goals.filter(g=>g.mode!=='pause').reduce((s,g)=>s+Number(g.monthly||0),0))}`:'尚未建立目標';$('allocationSummary').textContent=m.allocations.length?`已安排 ${money(m.allocations.reduce((s,x)=>s+Number(x.amount||0),0))}`:'尚未產生分配方案';renderHome();if($('flow').classList.contains('active'))renderFlow();if($('reconcile').classList.contains('active'))renderReconciliation()}
+function renderDreamTree(){
+  const m=M(), free=freeMoney(), transfers=m.transfers||[], transferDone=transfers.length?transfers.filter(x=>x.done).length/transfers.length:0;
+  const planning=m.confirmed?1:0, close=m.reconciliationClosed?1:0;
+  const goalTotal=(m.goals||[]).length, goalDone=(m.goals||[]).filter(g=>Number(g.saved||0)>=Number(g.target||0)&&Number(g.target||0)>0).length;
+  const score=Math.min(1,(planning*.35)+(transferDone*.4)+(close*.25));
+  const stages=[
+    {min:0,icon:'🌱',label:'階段 1・種子',title:'你的夢想正在發芽'},
+    {min:.25,icon:'🌿',label:'階段 2・新芽',title:'每一次規劃，都長出新葉'},
+    {min:.55,icon:'🪴',label:'階段 3・茁壯',title:'你的資金正在穩穩扎根'},
+    {min:.8,icon:'🌳',label:'階段 4・成樹',title:'這個月的夢想樹快完成了'},
+    {min:1,icon:'🌳✨',label:'階段 5・開花',title:'太棒了，這個月開花了'}
+  ];
+  let stage=stages[0];stages.forEach(x=>{if(score>=x.min)stage=x});
+  if($('v5Free'))$('v5Free').textContent=money(free);
+  if($('treeVisual'))$('treeVisual').textContent=stage.icon;
+  if($('treeStage'))$('treeStage').textContent=stage.label;
+  if($('treeTitle'))$('treeTitle').textContent=stage.title;
+  if($('treeGoals'))$('treeGoals').textContent=`${goalTotal} 個夢想${goalDone?`・${goalDone} 個完成`:''}`;
+  if($('treeDone'))$('treeDone').textContent=`${Math.round(score*100)}% 本月進度`;
+}
+function setDailyMessage(){
+  const now=new Date(),hour=now.getHours(),day=Math.floor(now.getTime()/86400000);
+  const morning=['早安，今天想種下什麼？','新的一天，替夢想澆一點水。','今天的一小步，正在長成未來。','把第一枚金幣，種在最想完成的事上。','你的未來，從今天這顆種子開始。'];
+  const afternoon=['每一筆規劃，都在悄悄長大。','今天的投入，正在為夢想扎根。','別急，好的未來需要一點時間生長。','讓資金往真正重要的方向發芽。','今天也替夢想，多留一片綠葉。'];
+  const evening=['今天，你的夢想又長大了一點。','每一天的累積，都會成為明天的風景。','謝謝今天願意替未來努力的你。','把今天的努力，留給明天開花。','今晚好好休息，夢想仍在悄悄生長。'];
+  const pool=hour<12?morning:hour<18?afternoon:evening,msg=pool[day%pool.length];
+  if($('dailyMessage'))$('dailyMessage').textContent=msg;
+  if($('headerMessage'))$('headerMessage').textContent=msg.replace(/[。！？]$/,'');
+  if($('dailyDate'))$('dailyDate').textContent=new Intl.DateTimeFormat('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(now);
+}
+
+const __v5Render=render; render=function(){__v5Render();renderDreamTree();setDailyMessage()};
 render();
 </script>
+
+
+<script>
+window.addEventListener('load', function(){
+  window.setTimeout(function(){var s=document.getElementById('brandSplash');if(s)s.classList.add('hide')},520);
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js').catch(function(){})}
+});
+</script>
+
 </body></html>
