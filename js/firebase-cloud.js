@@ -2,7 +2,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/fireba
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   signOut, onAuthStateChanged, sendPasswordResetEmail, updateProfile,
-  setPersistence, browserLocalPersistence
+  setPersistence, browserLocalPersistence, GoogleAuthProvider,
+  signInWithPopup, signInWithRedirect
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp
@@ -37,6 +38,11 @@ function translateError(error){
     'auth/weak-password':'密碼至少需要 6 個字元。','auth/email-already-in-use':'這個 Email 已經註冊。',
     'auth/invalid-credential':'Email 或密碼不正確。','auth/user-disabled':'這個帳號已停用。',
     'auth/too-many-requests':'嘗試次數過多，請稍後再試。','auth/network-request-failed':'網路連線失敗，請確認網路。',
+    'auth/popup-closed-by-user':'Google 登入視窗已關閉。',
+    'auth/popup-blocked':'瀏覽器阻擋登入視窗，正在改用重新導向登入。',
+    'auth/cancelled-popup-request':'Google 登入已取消。',
+    'auth/account-exists-with-different-credential':'這個 Email 已使用其他登入方式註冊。',
+    'auth/unauthorized-domain':'目前網站網域尚未加入 Firebase 已授權網域。',
     'permission-denied':'雲端資料權限不足，請確認 Firestore 規則。'
   };
   return map[error?.code]||error?.message||'發生未預期的錯誤。';
@@ -47,6 +53,29 @@ function setMode(mode){
   setAuthMessage('');
 }
 window.setAuthMode=setMode;
+
+
+const googleProvider=new GoogleAuthProvider();
+googleProvider.setCustomParameters({prompt:'select_account'});
+
+async function googleLogin(){
+  const button=$('googleLoginButton');
+  if(button)button.disabled=true;
+  setAuthMessage('正在開啟 Google 登入…');
+  try{
+    await signInWithPopup(auth,googleProvider);
+    setAuthMessage('Google 登入成功，正在載入資料…','ok');
+  }catch(err){
+    if(err?.code==='auth/popup-blocked'){
+      setAuthMessage('瀏覽器阻擋彈出視窗，正在前往 Google 登入…');
+      await signInWithRedirect(auth,googleProvider);
+      return;
+    }
+    setAuthMessage(translateError(err),'bad');
+  }finally{
+    if(button)button.disabled=false;
+  }
+}
 
 async function register(e){
   e.preventDefault();setAuthMessage('正在建立帳號…');
@@ -73,6 +102,7 @@ async function reset(e){
   try{await sendPasswordResetEmail(auth,email);setAuthMessage('重設密碼郵件已寄出，請查看信箱。','ok')}
   catch(err){setAuthMessage(translateError(err),'bad')}
 }
+$('googleLoginButton')?.addEventListener('click',googleLogin);
 $('loginForm')?.addEventListener('submit',login);
 $('registerForm')?.addEventListener('submit',register);
 $('resetForm')?.addEventListener('submit',reset);

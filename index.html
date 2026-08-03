@@ -34,6 +34,11 @@
         <button type="button" data-auth-mode="register" onclick="setAuthMode('register')">建立帳號</button>
       </div>
       <form id="loginForm" data-auth-panel="login">
+        <button class="google-auth-button" id="googleLoginButton" type="button" aria-label="使用 Google 帳號登入">
+          <span class="google-g" aria-hidden="true">G</span>
+          <span>使用 Google 帳號登入</span>
+        </button>
+        <div class="auth-divider"><span>或使用 Email</span></div>
         <label>Email<input id="loginEmail" type="email" autocomplete="email" required placeholder="name@example.com"></label>
         <label>密碼<input id="loginPassword" type="password" autocomplete="current-password" required minlength="6" placeholder="至少 6 個字元"></label>
         <button class="auth-primary" type="submit">登入 Dream Tree</button>
@@ -221,7 +226,7 @@
 <div class="card" style="margin-top:14px"><div class="title"><h2>本月清算調整紀錄</h2><span class="badge" id="adjustmentCount">0 筆</span></div><div id="adjustmentRows"></div></div>
 </section>
 </div>
-<div class="brand-footer"><img src="assets/images/brand-logo.png" alt="">Dream Tree · 資金規劃系統 <span class="v5-version">V6.2 Cloud</span></div><nav class="nav" aria-label="主要導覽">
+<div class="brand-footer"><img src="assets/images/brand-logo.png" alt="">Dream Tree · 資金規劃系統 <span class="v5-version">V6.3 Google Login</span></div><nav class="nav" aria-label="主要導覽">
   <button data-page="plan" onclick="showPage('plan')"><span class="ni">＄</span><span class="nl">規劃</span></button>
   <button data-page="flow" onclick="showPage('flow')"><span class="ni">⇄</span><span class="nl">轉帳</span></button>
   <button class="active" data-page="home" onclick="showPage('home')"><span class="ni">⌂</span><span class="nl">首頁</span></button>

@@ -417,3 +417,27 @@ body.auth-locked .app,body.auth-locked .nav,body.auth-locked .brand-footer{filte
 @media(min-width:980px){.top{grid-template-columns:auto 1fr auto}.month-nav{grid-column:auto;margin-top:0}.header-tools{grid-column:2}.month-nav{grid-column:3}}
 @media(max-width:760px){.auth-shell{grid-template-columns:1fr;gap:20px}.auth-brand{grid-column:auto}.auth-copy{display:none}.auth-card{padding:20px;border-radius:23px}.header-tools{order:3;width:100%;justify-content:space-between}.top{display:flex;flex-wrap:wrap}.month-nav{order:4}.sync-pill{padding:7px 9px}.user-copy{max-width:100px}}
 @media(max-width:420px){.user-copy small{display:none}.sync-pill small{display:none}.auth-overlay{padding:12px}.auth-brand{padding-left:5px}}
+
+
+/* ===== V6.3 Authentication UI ===== */
+.auth-card [hidden]{display:none!important}
+
+.google-auth-button{
+  width:100%;min-height:52px;display:flex;align-items:center;justify-content:center;
+  gap:12px;border:1px solid #d5e2ea;border-radius:15px;background:#fff;
+  color:#24384a;font:inherit;font-weight:800;cursor:pointer;
+  box-shadow:0 6px 16px rgba(40,94,127,.07);
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease
+}
+.google-auth-button:hover{transform:translateY(-1px);border-color:#b9d5e5;box-shadow:0 10px 24px rgba(40,94,127,.12)}
+.google-auth-button:active{transform:translateY(0)}
+.google-auth-button:disabled{opacity:.65;cursor:wait;transform:none}
+.google-g{
+  width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  background:conic-gradient(from -45deg,#4285f4 0 25%,#34a853 25% 50%,#fbbc05 50% 75%,#ea4335 75% 100%);
+  color:#fff;font-family:Arial,sans-serif;font-size:16px;font-weight:900;
+  box-shadow:inset 0 0 0 4px #fff
+}
+.auth-divider{display:flex;align-items:center;gap:10px;color:#8a9ca9;font-size:11px;font-weight:700}
+.auth-divider:before,.auth-divider:after{content:"";height:1px;flex:1;background:#e2ebf1}
+.auth-tabs button{min-height:48px}

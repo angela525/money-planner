@@ -1,4 +1,4 @@
-const CACHE_NAME='dream-tree-v6-2-cloud-1';
+const CACHE_NAME='dream-tree-v6-3-google-auth';
 const ASSETS = [
   './', './index.html', './css/app.css', './js/app.js', './js/firebase-cloud.js', './js/firebase-config.js',
   './manifest.json', './assets/images/brand-logo.png',
