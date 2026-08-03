@@ -21,9 +21,45 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/app.css">
 </head>
-<body><div id="brandSplash" role="status" aria-label="正在開啟 Dream Tree"><div class="splash-inner"><img class="splash-logo" src="icon-512.png" alt=""><div class="splash-title">Dream Tree</div><div class="splash-en">MONEY PLANNER</div><div class="splash-tagline">把每一筆資金，種成想要的未來。</div></div></div>
+<body class="auth-locked"><div id="authOverlay" class="auth-overlay" aria-live="polite">
+  <div class="auth-shell">
+    <div class="auth-brand">
+      <img src="assets/images/brand-logo.png" alt="Dream Tree Logo">
+      <div><strong>Dream Tree</strong><span>資金規劃系統</span></div>
+    </div>
+    <div class="auth-copy"><h1>讓每一筆資金，<br>在雲端安心成長。</h1><p>登入後，手機與電腦會共用同一份資料。</p></div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button type="button" class="active" data-auth-mode="login" onclick="setAuthMode('login')">登入</button>
+        <button type="button" data-auth-mode="register" onclick="setAuthMode('register')">建立帳號</button>
+      </div>
+      <form id="loginForm" data-auth-panel="login">
+        <label>Email<input id="loginEmail" type="email" autocomplete="email" required placeholder="name@example.com"></label>
+        <label>密碼<input id="loginPassword" type="password" autocomplete="current-password" required minlength="6" placeholder="至少 6 個字元"></label>
+        <button class="auth-primary" type="submit">登入 Dream Tree</button>
+        <button class="auth-link" type="button" onclick="setAuthMode('reset')">忘記密碼？</button>
+      </form>
+      <form id="registerForm" data-auth-panel="register" hidden>
+        <label>顯示名稱<input id="registerName" autocomplete="name" required placeholder="例如：韋萱"></label>
+        <label>Email<input id="registerEmail" type="email" autocomplete="email" required placeholder="name@example.com"></label>
+        <label>密碼<input id="registerPassword" type="password" autocomplete="new-password" required minlength="6" placeholder="至少 6 個字元"></label>
+        <label>確認密碼<input id="registerConfirm" type="password" autocomplete="new-password" required minlength="6"></label>
+        <button class="auth-primary" type="submit">種下第一顆種子</button>
+      </form>
+      <form id="resetForm" data-auth-panel="reset" hidden>
+        <h2>重設密碼</h2><p>輸入註冊 Email，我們會寄出重設連結。</p>
+        <label>Email<input id="resetEmail" type="email" autocomplete="email" required></label>
+        <button class="auth-primary" type="submit">寄送重設郵件</button>
+        <button class="auth-link" type="button" onclick="setAuthMode('login')">返回登入</button>
+      </form>
+      <div id="authMessage" class="auth-message"></div>
+      <div class="auth-security">🔒 每個帳號只能讀取自己的財務資料</div>
+    </div>
+  </div>
+</div>
+<div id="brandSplash" role="status" aria-label="正在開啟 Dream Tree"><div class="splash-inner"><img class="splash-logo" src="icon-512.png" alt=""><div class="splash-title">Dream Tree</div><div class="splash-en">MONEY PLANNER</div><div class="splash-tagline">把每一筆資金，種成想要的未來。</div></div></div>
 <div class="app">
-<header class="top"><div class="brand"><img class="brand-logo" src="assets/images/brand-logo.png" alt="樹苗金幣 Logo"><div class="brand-copy"><h1>Dream Tree</h1><span class="brand-en">資金規劃系統</span><p id="headerMessage">每一筆資金，都是一顆種子。</p></div></div><div class="month-nav"><button class="icon" onclick="shiftMonth(-1)" aria-label="上個月">‹</button><input class="month" type="month" id="monthPicker"><button class="icon" onclick="shiftMonth(1)" aria-label="下個月">›</button><button class="btn soft" onclick="createNextMonth()">建立新月份</button></div></header>
+<header class="top"><div class="brand"><img class="brand-logo" src="assets/images/brand-logo.png" alt="樹苗金幣 Logo"><div class="brand-copy"><h1>Dream Tree</h1><span class="brand-en">資金規劃系統</span><p id="headerMessage">每一筆資金，都是一顆種子。</p></div></div><div class="header-tools"><div class="sync-pill" title="雲端同步狀態"><span id="syncDot" class="sync-dot offline"></span><span id="syncLabel">尚未登入</span><small id="lastSyncTime"></small></div><div class="cloud-user"><button id="userMenuButton" class="user-button" type="button"><span id="userAvatar" class="user-avatar">U</span><span class="user-copy"><b id="userDisplayName">使用者</b><small id="userEmail"></small></span><span>⌄</span></button><div class="user-menu"><button type="button" onclick="dreamCloudSyncNow()">立即同步</button><button id="logoutButton" type="button">登出</button></div></div></div><div class="month-nav"><button class="icon" onclick="shiftMonth(-1)" aria-label="上個月">‹</button><input class="month" type="month" id="monthPicker"><button class="icon" onclick="shiftMonth(1)" aria-label="下個月">›</button><button class="btn soft" onclick="createNextMonth()">建立新月份</button></div></header>
 
 <section id="home" class="page active">
 <div class="home-shell">
@@ -185,7 +221,7 @@
 <div class="card" style="margin-top:14px"><div class="title"><h2>本月清算調整紀錄</h2><span class="badge" id="adjustmentCount">0 筆</span></div><div id="adjustmentRows"></div></div>
 </section>
 </div>
-<div class="brand-footer"><img src="assets/images/brand-logo.png" alt="">Dream Tree · 資金規劃系統 <span class="v5-version">V6.0 Refactor</span></div><nav class="nav" aria-label="主要導覽">
+<div class="brand-footer"><img src="assets/images/brand-logo.png" alt="">Dream Tree · 資金規劃系統 <span class="v5-version">V6.2 Cloud</span></div><nav class="nav" aria-label="主要導覽">
   <button data-page="plan" onclick="showPage('plan')"><span class="ni">＄</span><span class="nl">規劃</span></button>
   <button data-page="flow" onclick="showPage('flow')"><span class="ni">⇄</span><span class="nl">轉帳</span></button>
   <button class="active" data-page="home" onclick="showPage('home')"><span class="ni">⌂</span><span class="nl">首頁</span></button>
@@ -198,4 +234,5 @@
 
 
 <script src="js/app.js" defer></script>
+<script type="module" src="js/firebase-cloud.js"></script>
 </body></html>

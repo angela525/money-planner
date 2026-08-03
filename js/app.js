@@ -3,7 +3,38 @@ let app=JSON.parse(localStorage.getItem(KEY)||'null')||{month:new Date().toISOSt
 app.accounts=app.accounts||[];app.months=app.months||{};app.accounts.forEach(a=>{a.balance=Number(a.balance||0);a.freeCount=Number(a.freeCount||0)});
 function emptyMonth(copyGoals=[]){return{incomes:[],expenses:[],living:0,salaryAccount:app.accounts[0]?.id||'',goals:JSON.parse(JSON.stringify(copyGoals)),allocations:[],confirmed:false,transfers:[],reconciliation:[],reconciliationClosed:false,reconciliationDate:'',adjustments:[],openingBalances:Object.fromEntries(app.accounts.map(a=>[a.id,Number(a.balance||0)])),cashCounts:{}}}
 function M(){if(!app.months[app.month])app.months[app.month]=emptyMonth();let m=app.months[app.month];m.incomes??=[];m.expenses??=[];m.goals??=[];m.allocations??=[];m.transfers??=[];m.reconciliation??=[];m.adjustments??=[];m.openingBalances??=Object.fromEntries(app.accounts.map(a=>[a.id,Number(a.balance||0)]));m.cashCounts??={};return m}
-function save(){localStorage.setItem(KEY,JSON.stringify(app))}function opts(v){return app.accounts.map(a=>`<option value="${a.id}" ${a.id===v?'selected':''}>${esc(a.name)}</option>`).join('')}function accountName(id){return app.accounts.find(a=>a.id===id)?.name||'未指定'}
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(app));
+  if(!window.__dreamCloudApplying&&typeof window.dreamCloudQueue==='function'){
+    window.dreamCloudQueue(JSON.parse(JSON.stringify(app)));
+  }
+}
+window.DreamTreeApp={
+  storageKey:KEY,
+  getData:()=>JSON.parse(JSON.stringify(app)),
+  applyData:(data)=>{
+    if(!data||!Array.isArray(data.accounts)||!data.months)throw new Error('雲端資料格式不正確');
+    window.__dreamCloudApplying=true;
+    app=JSON.parse(JSON.stringify(data));
+    app.accounts=app.accounts||[];app.months=app.months||{};
+    app.accounts.forEach(a=>{a.balance=Number(a.balance||0);a.freeCount=Number(a.freeCount||0)});
+    localStorage.setItem(KEY,JSON.stringify(app));
+    M();render();
+    window.__dreamCloudApplying=false;
+  },
+  hasMeaningfulData:()=>Object.keys(app.months||{}).length>0||app.accounts.some(a=>Number(a.balance||0)!==0),
+  freshData:()=>({
+    month:new Date().toISOString().slice(0,7),
+    accounts:[
+      {id:'a1',name:'國泰薪資帳戶',free:false,relay:false,freeCount:0,balance:0},
+      {id:'a2',name:'iLEO',free:true,relay:true,freeCount:99,balance:0},
+      {id:'a3',name:'Line Pay',free:false,relay:false,freeCount:0,balance:0},
+      {id:'a4',name:'證券戶',free:false,relay:false,freeCount:0,balance:0}
+    ],months:{}
+  })
+};
+window.dispatchEvent(new CustomEvent('dreamtree:app-ready'));
+function opts(v){return app.accounts.map(a=>`<option value="${a.id}" ${a.id===v?'selected':''}>${esc(a.name)}</option>`).join('')}function accountName(id){return app.accounts.find(a=>a.id===id)?.name||'未指定'}
 function showPage(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===id));if(id==='flow')renderFlow();if(id==='reconcile')renderReconciliation()}
 $('monthPicker').value=app.month;$('monthPicker').onchange=e=>switchMonth(e.target.value);
 function switchMonth(v){if(!v)return;app.month=v;M();save();$('monthPicker').value=v;render()}

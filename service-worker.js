@@ -1,6 +1,6 @@
-const CACHE_NAME = 'dream-tree-v6-0-refactor-1';
+const CACHE_NAME='dream-tree-v6-2-cloud-1';
 const ASSETS = [
-  './', './index.html', './css/app.css', './js/app.js',
+  './', './index.html', './css/app.css', './js/app.js', './js/firebase-cloud.js', './js/firebase-config.js',
   './manifest.json', './assets/images/brand-logo.png',
   './favicon-16.png', './favicon-32.png',
   './apple-touch-icon.png', './icon-192.png', './icon-512.png'
