@@ -441,3 +441,25 @@ body.auth-locked .app,body.auth-locked .nav,body.auth-locked .brand-footer{filte
 .auth-divider{display:flex;align-items:center;gap:10px;color:#8a9ca9;font-size:11px;font-weight:700}
 .auth-divider:before,.auth-divider:after{content:"";height:1px;flex:1;background:#e2ebf1}
 .auth-tabs button{min-height:48px}
+
+
+/* ===== Dream Tree V7 Beta ===== */
+.auth-card [hidden]{display:none!important}
+.trusted-device{display:flex!important;flex-direction:row!important;align-items:center;gap:9px;font-size:11px!important;color:#718898!important;font-weight:650!important}
+.trusted-device input{width:17px!important;height:17px!important;margin:0!important;accent-color:#1da3e8}
+.user-avatar{background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}
+.user-avatar.has-photo{font-size:0;border:2px solid #fff;box-shadow:0 0 0 1px #cbe5f4}
+.onboarding-overlay{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:18px;background:rgba(18,48,70,.36);backdrop-filter:blur(15px)}
+.onboarding-overlay.hidden{display:none!important}
+.onboarding-card{width:min(440px,100%);max-height:calc(100vh - 36px);overflow:auto;padding:30px;border-radius:30px;background:linear-gradient(155deg,#fff,#f1fbff);border:1px solid #d8edf8;box-shadow:0 28px 80px rgba(16,73,108,.25);text-align:center}
+.onboarding-seed{width:88px;height:88px;margin:0 auto 13px;display:grid;place-items:center;border-radius:27px;background:linear-gradient(145deg,#e9fff1,#d9f4e5);font-size:50px;animation:v7Seed 2.8s ease-in-out infinite}
+@keyframes v7Seed{50%{transform:translateY(-5px) rotate(2deg)}}
+.onboarding-kicker{font-size:10px;font-weight:900;letter-spacing:.13em;color:#1681bd}
+.onboarding-card h2{margin:8px 0 7px;font-size:26px;color:#15364d}
+.onboarding-card>p{margin:0 auto 20px;max-width:330px;color:#718797;font-size:13px;line-height:1.7}
+.onboarding-card form{display:grid;gap:13px;text-align:left}
+.onboarding-card label{display:grid;gap:7px;color:#496679;font-size:12px;font-weight:800}
+.onboarding-card input{width:100%;padding:14px 15px;border:1px solid #d7e8f2;border-radius:15px;background:#fff;color:#18364b;font:inherit;outline:none}
+.onboarding-card input:focus{border-color:#57bbed;box-shadow:0 0 0 4px rgba(67,170,230,.12)}
+.cloud-welcome{font-size:11px;color:#6f8798}
+@media(max-width:600px){.onboarding-card{padding:24px 18px;border-radius:25px}.onboarding-card h2{font-size:23px}}

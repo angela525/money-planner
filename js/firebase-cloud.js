@@ -3,7 +3,7 @@ import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   signOut, onAuthStateChanged, sendPasswordResetEmail, updateProfile,
   setPersistence, browserLocalPersistence, GoogleAuthProvider,
-  signInWithPopup, signInWithRedirect
+  signInWithPopup, signInWithRedirect, getRedirectResult
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp
@@ -55,6 +55,8 @@ function setMode(mode){
 window.setAuthMode=setMode;
 
 
+const prefersRedirect=()=>matchMedia('(max-width: 760px), (pointer: coarse)').matches;
+
 const googleProvider=new GoogleAuthProvider();
 googleProvider.setCustomParameters({prompt:'select_account'});
 
@@ -63,11 +65,17 @@ async function googleLogin(){
   if(button)button.disabled=true;
   setAuthMessage('正在開啟 Google 登入…');
   try{
+    if(prefersRedirect()){
+      sessionStorage.setItem('dreamTreeGoogleRedirect','1');
+      await signInWithRedirect(auth,googleProvider);
+      return;
+    }
     await signInWithPopup(auth,googleProvider);
     setAuthMessage('Google 登入成功，正在載入資料…','ok');
   }catch(err){
-    if(err?.code==='auth/popup-blocked'){
-      setAuthMessage('瀏覽器阻擋彈出視窗，正在前往 Google 登入…');
+    if(err?.code==='auth/popup-blocked'||err?.code==='auth/operation-not-supported-in-this-environment'){
+      sessionStorage.setItem('dreamTreeGoogleRedirect','1');
+      setAuthMessage('正在改用安全重新導向登入…');
       await signInWithRedirect(auth,googleProvider);
       return;
     }
@@ -76,6 +84,11 @@ async function googleLogin(){
     if(button)button.disabled=false;
   }
 }
+
+getRedirectResult(auth).then(result=>{
+  if(result?.user)setAuthMessage('Google 登入成功，正在載入資料…','ok');
+  sessionStorage.removeItem('dreamTreeGoogleRedirect');
+}).catch(err=>setAuthMessage(translateError(err),'bad'));
 
 async function register(e){
   e.preventDefault();setAuthMessage('正在建立帳號…');
@@ -133,6 +146,45 @@ window.dreamCloudQueue=data=>{
 };
 window.dreamCloudSyncNow=()=>uploadData(window.DreamTreeApp?.getData(),'manual');
 
+
+function setUserAvatar(user,display){
+  const avatar=$('userAvatar');if(!avatar)return;
+  if(user.photoURL){
+    avatar.textContent='';avatar.style.backgroundImage=`url("${String(user.photoURL).replace(/"/g,'')}")`;avatar.classList.add('has-photo');
+  }else{
+    avatar.style.backgroundImage='';avatar.classList.remove('has-photo');avatar.textContent=display.slice(0,1).toUpperCase();
+  }
+}
+async function openOnboardingIfNeeded(user){
+  const profileRef=doc(db,'users',user.uid,'profile','main');
+  const profileSnap=await getDoc(profileRef);
+  const profile=profileSnap.exists()?profileSnap.data():{};
+  if(profile?.onboardingComplete)return;
+  const overlay=$('onboardingOverlay');
+  if($('onboardingName'))$('onboardingName').value=user.displayName||user.email?.split('@')[0]||'';
+  overlay?.classList.remove('hidden');
+}
+async function completeOnboarding(skip=false){
+  const user=auth.currentUser;if(!user)return;
+  const name=($('onboardingName')?.value||user.displayName||user.email?.split('@')[0]||'使用者').trim();
+  const dream=($('onboardingDream')?.value||'').trim();
+  const target=Number($('onboardingTarget')?.value||0);
+  const msg=$('onboardingMessage');if(msg){msg.textContent='正在建立你的 Dream Tree…';msg.className='auth-message'}
+  try{
+    if(name&&name!==user.displayName)await updateProfile(user,{displayName:name});
+    await setDoc(doc(db,'users',user.uid,'profile','main'),{
+      displayName:name,email:user.email||'',photoURL:user.photoURL||'',onboardingComplete:true,
+      onboardingSkipped:Boolean(skip),updatedAt:serverTimestamp(),createdAt:serverTimestamp()
+    },{merge:true});
+    if(!skip&&dream){const api=await waitForApp();api.addStarterDream?.(dream,target)}
+    $('onboardingOverlay')?.classList.add('hidden');
+    if($('userDisplayName'))$('userDisplayName').textContent=name;
+    setUserAvatar(user,name);
+  }catch(err){if(msg){msg.textContent=translateError(err);msg.className='auth-message bad'}}
+}
+$('onboardingForm')?.addEventListener('submit',e=>{e.preventDefault();completeOnboarding(false)});
+$('skipOnboarding')?.addEventListener('click',()=>completeOnboarding(true));
+
 async function startCloud(user){
   const api=await waitForApp();
   state.user=user;state.ready=false;
@@ -174,8 +226,8 @@ onAuthStateChanged(auth,async user=>{
     const display=user.displayName||user.email?.split('@')[0]||'使用者';
     if($('userDisplayName'))$('userDisplayName').textContent=display;
     if($('userEmail'))$('userEmail').textContent=user.email||'';
-    if($('userAvatar'))$('userAvatar').textContent=display.slice(0,1).toUpperCase();
-    try{await startCloud(user)}catch(err){setSync('雲端載入失敗','bad');console.error(err)}
+    setUserAvatar(user,display);
+    try{await startCloud(user);await openOnboardingIfNeeded(user)}catch(err){setSync('雲端載入失敗','bad');console.error(err)}
   }else{
     if(state.unsub){state.unsub();state.unsub=null}state.user=null;state.ready=false;
     document.body.classList.add('auth-locked');overlay?.classList.remove('hidden');

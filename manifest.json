@@ -1,7 +1,7 @@
 {
-  "name": "Dream Tree｜資金規劃系統",
+  "name": "Dream Tree V7｜資金規劃系統",
   "short_name": "Dream Tree",
-  "description": "把每一筆資金種成想要的未來。",
+  "description": "登入雲端，讓每一筆資金與夢想在不同裝置安心成長。",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

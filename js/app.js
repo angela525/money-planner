@@ -31,7 +31,16 @@ window.DreamTreeApp={
       {id:'a3',name:'Line Pay',free:false,relay:false,freeCount:0,balance:0},
       {id:'a4',name:'證券戶',free:false,relay:false,freeCount:0,balance:0}
     ],months:{}
-  })
+  }),
+  addStarterDream:(name,target=0)=>{
+    const clean=String(name||'').trim();
+    if(!clean)return;
+    const m=M();
+    if(!m.goals.some(g=>String(g.name||'').trim()===clean)){
+      m.goals.push({id:uid(),name:clean,target:Number(target||0),saved:0,monthly:0,mode:'flex',priority:1,account:app.accounts[0]?.id||''});
+      save();render();
+    }
+  }
 };
 window.dispatchEvent(new CustomEvent('dreamtree:app-ready'));
 function opts(v){return app.accounts.map(a=>`<option value="${a.id}" ${a.id===v?'selected':''}>${esc(a.name)}</option>`).join('')}function accountName(id){return app.accounts.find(a=>a.id===id)?.name||'未指定'}

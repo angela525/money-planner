@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Dream Tree｜資金規劃系統</title>
+<title>Dream Tree V7｜資金規劃系統</title>
 <meta name="theme-color" content="#1677BD">
 <meta name="description" content="把每一筆資金種成想要的未來。Dream Tree 資金規劃系統。">
 <meta name="application-name" content="Dream Tree">
@@ -41,7 +41,7 @@
         <div class="auth-divider"><span>或使用 Email</span></div>
         <label>Email<input id="loginEmail" type="email" autocomplete="email" required placeholder="name@example.com"></label>
         <label>密碼<input id="loginPassword" type="password" autocomplete="current-password" required minlength="6" placeholder="至少 6 個字元"></label>
-        <button class="auth-primary" type="submit">登入 Dream Tree</button>
+        <label class="trusted-device"><input id="trustedDevice" type="checkbox" checked><span>這是我的私人裝置，保留本機離線資料</span></label><button class="auth-primary" type="submit">登入 Dream Tree</button>
         <button class="auth-link" type="button" onclick="setAuthMode('reset')">忘記密碼？</button>
       </form>
       <form id="registerForm" data-auth-panel="register" hidden>
@@ -62,9 +62,26 @@
     </div>
   </div>
 </div>
+<div id="onboardingOverlay" class="onboarding-overlay hidden" aria-modal="true" role="dialog" aria-labelledby="onboardingTitle">
+  <div class="onboarding-card">
+    <div class="onboarding-seed">🌱</div>
+    <span class="onboarding-kicker">WELCOME TO DREAM TREE</span>
+    <h2 id="onboardingTitle">種下你的第一個夢想</h2>
+    <p>先設定稱呼與第一個想完成的目標，之後都能再修改。</p>
+    <form id="onboardingForm">
+      <label>希望怎麼稱呼你？<input id="onboardingName" autocomplete="name" required placeholder="例如：韋萱"></label>
+      <label>第一個夢想（可稍後新增）<input id="onboardingDream" placeholder="例如：日本旅行基金"></label>
+      <label>目標金額（選填）<input id="onboardingTarget" type="number" min="0" inputmode="numeric" placeholder="例如：50000"></label>
+      <button class="auth-primary" type="submit">開始培養夢想</button>
+      <button id="skipOnboarding" class="auth-link" type="button">先略過，直接進入</button>
+    </form>
+    <div id="onboardingMessage" class="auth-message"></div>
+  </div>
+</div>
+
 <div id="brandSplash" role="status" aria-label="正在開啟 Dream Tree"><div class="splash-inner"><img class="splash-logo" src="icon-512.png" alt=""><div class="splash-title">Dream Tree</div><div class="splash-en">MONEY PLANNER</div><div class="splash-tagline">把每一筆資金，種成想要的未來。</div></div></div>
 <div class="app">
-<header class="top"><div class="brand"><img class="brand-logo" src="assets/images/brand-logo.png" alt="樹苗金幣 Logo"><div class="brand-copy"><h1>Dream Tree</h1><span class="brand-en">資金規劃系統</span><p id="headerMessage">每一筆資金，都是一顆種子。</p></div></div><div class="header-tools"><div class="sync-pill" title="雲端同步狀態"><span id="syncDot" class="sync-dot offline"></span><span id="syncLabel">尚未登入</span><small id="lastSyncTime"></small></div><div class="cloud-user"><button id="userMenuButton" class="user-button" type="button"><span id="userAvatar" class="user-avatar">U</span><span class="user-copy"><b id="userDisplayName">使用者</b><small id="userEmail"></small></span><span>⌄</span></button><div class="user-menu"><button type="button" onclick="dreamCloudSyncNow()">立即同步</button><button id="logoutButton" type="button">登出</button></div></div></div><div class="month-nav"><button class="icon" onclick="shiftMonth(-1)" aria-label="上個月">‹</button><input class="month" type="month" id="monthPicker"><button class="icon" onclick="shiftMonth(1)" aria-label="下個月">›</button><button class="btn soft" onclick="createNextMonth()">建立新月份</button></div></header>
+<header class="top"><div class="brand"><img class="brand-logo" src="assets/images/brand-logo.png" alt="樹苗金幣 Logo"><div class="brand-copy"><h1>Dream Tree</h1><span class="brand-en">資金規劃系統</span><p id="headerMessage">每一筆資金，都是一顆種子。</p></div></div><div class="header-tools"><div class="sync-pill" title="雲端同步狀態"><span id="syncDot" class="sync-dot offline"></span><span id="syncLabel">尚未登入</span><small id="lastSyncTime"></small></div><div class="cloud-user"><button id="userMenuButton" class="user-button" type="button"><span id="userAvatar" class="user-avatar" aria-hidden="true">U</span><span class="user-copy"><b id="userDisplayName">使用者</b><small id="userEmail"></small></span><span>⌄</span></button><div class="user-menu"><button type="button" onclick="dreamCloudSyncNow()">立即同步</button><button id="logoutButton" type="button">登出</button></div></div></div><div class="month-nav"><button class="icon" onclick="shiftMonth(-1)" aria-label="上個月">‹</button><input class="month" type="month" id="monthPicker"><button class="icon" onclick="shiftMonth(1)" aria-label="下個月">›</button><button class="btn soft" onclick="createNextMonth()">建立新月份</button></div></header>
 
 <section id="home" class="page active">
 <div class="home-shell">
@@ -226,7 +243,7 @@
 <div class="card" style="margin-top:14px"><div class="title"><h2>本月清算調整紀錄</h2><span class="badge" id="adjustmentCount">0 筆</span></div><div id="adjustmentRows"></div></div>
 </section>
 </div>
-<div class="brand-footer"><img src="assets/images/brand-logo.png" alt="">Dream Tree · 資金規劃系統 <span class="v5-version">V6.3 Google Login</span></div><nav class="nav" aria-label="主要導覽">
+<div class="brand-footer"><img src="assets/images/brand-logo.png" alt="">Dream Tree · 資金規劃系統 <span class="v5-version">V7 Beta</span></div><nav class="nav" aria-label="主要導覽">
   <button data-page="plan" onclick="showPage('plan')"><span class="ni">＄</span><span class="nl">規劃</span></button>
   <button data-page="flow" onclick="showPage('flow')"><span class="ni">⇄</span><span class="nl">轉帳</span></button>
   <button class="active" data-page="home" onclick="showPage('home')"><span class="ni">⌂</span><span class="nl">首頁</span></button>

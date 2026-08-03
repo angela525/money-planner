@@ -1,5 +1,5 @@
 export const firebaseConfig = {
-  apiKey:  "AIzaSyBRvLXxf5hc7IjF2vRLeZw7mklRoQkvHsA",
+  apiKey: "AIzaSyBRvLXxf5hc7IjF2vRLeZw7mklRoQkvHsA",
   authDomain: "dream-tree-money-planner.firebaseapp.com",
   projectId: "dream-tree-money-planner",
   storageBucket: "dream-tree-money-planner.firebasestorage.app",
