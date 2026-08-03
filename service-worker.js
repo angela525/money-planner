@@ -1,4 +1,4 @@
-const CACHE_NAME='dream-tree-v7-beta-1';
+const CACHE_NAME='dream-tree-v7-1-onboarding-fix';
 const ASSETS=[
   './','./index.html','./css/app.css','./js/app.js','./js/firebase-cloud.js','./js/firebase-config.js',
   './manifest.json','./assets/images/brand-logo.png','./favicon-16.png','./favicon-32.png',

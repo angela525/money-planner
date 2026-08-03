@@ -155,14 +155,35 @@ function setUserAvatar(user,display){
     avatar.style.backgroundImage='';avatar.classList.remove('has-photo');avatar.textContent=display.slice(0,1).toUpperCase();
   }
 }
-async function openOnboardingIfNeeded(user){
-  const profileRef=doc(db,'users',user.uid,'profile','main');
-  const profileSnap=await getDoc(profileRef);
-  const profile=profileSnap.exists()?profileSnap.data():{};
-  if(profile?.onboardingComplete)return;
+function onboardingSeenKey(user){
+  return `dreamTreeV7OnboardingSeen:${user.uid}`;
+}
+function showOnboarding(user,{force=false}={}){
   const overlay=$('onboardingOverlay');
+  if(!overlay)return;
   if($('onboardingName'))$('onboardingName').value=user.displayName||user.email?.split('@')[0]||'';
-  overlay?.classList.remove('hidden');
+  if(force){
+    if($('onboardingDream'))$('onboardingDream').value='';
+    if($('onboardingTarget'))$('onboardingTarget').value='';
+  }
+  overlay.classList.remove('hidden');
+  document.body.classList.add('onboarding-open');
+}
+async function openOnboardingIfNeeded(user){
+  const localSeen=localStorage.getItem(onboardingSeenKey(user))==='1';
+  const profileRef=doc(db,'users',user.uid,'profile','main');
+  let profile={};
+  try{
+    const profileSnap=await getDoc(profileRef);
+    profile=profileSnap.exists()?profileSnap.data():{};
+  }catch(err){
+    console.warn('Unable to read onboarding profile; using local first-login check.',err);
+  }
+
+  // V7.1 rule: every account must see the V7 onboarding once on this browser.
+  // A completed cloud profile alone no longer suppresses the first V7 welcome.
+  if(localSeen)return;
+  showOnboarding(user);
 }
 async function completeOnboarding(skip=false){
   const user=auth.currentUser;if(!user)return;
@@ -177,13 +198,21 @@ async function completeOnboarding(skip=false){
       onboardingSkipped:Boolean(skip),updatedAt:serverTimestamp(),createdAt:serverTimestamp()
     },{merge:true});
     if(!skip&&dream){const api=await waitForApp();api.addStarterDream?.(dream,target)}
+    localStorage.setItem(onboardingSeenKey(user),'1');
     $('onboardingOverlay')?.classList.add('hidden');
+    document.body.classList.remove('onboarding-open');
     if($('userDisplayName'))$('userDisplayName').textContent=name;
     setUserAvatar(user,name);
   }catch(err){if(msg){msg.textContent=translateError(err);msg.className='auth-message bad'}}
 }
 $('onboardingForm')?.addEventListener('submit',e=>{e.preventDefault();completeOnboarding(false)});
 $('skipOnboarding')?.addEventListener('click',()=>completeOnboarding(true));
+$('reopenOnboardingButton')?.addEventListener('click',()=>{
+  const user=auth.currentUser;
+  if(!user)return;
+  document.body.classList.remove('user-menu-open');
+  showOnboarding(user,{force:true});
+});
 
 async function startCloud(user){
   const api=await waitForApp();
@@ -229,6 +258,8 @@ onAuthStateChanged(auth,async user=>{
     setUserAvatar(user,display);
     try{await startCloud(user);await openOnboardingIfNeeded(user)}catch(err){setSync('雲端載入失敗','bad');console.error(err)}
   }else{
+    $('onboardingOverlay')?.classList.add('hidden');
+    document.body.classList.remove('onboarding-open');
     if(state.unsub){state.unsub();state.unsub=null}state.user=null;state.ready=false;
     document.body.classList.add('auth-locked');overlay?.classList.remove('hidden');
     setSync('尚未登入','offline');
