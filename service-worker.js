@@ -1,6 +1,6 @@
-const CACHE_NAME='dream-tree-v7.2-1-onboarding-fix';
+const CACHE_NAME='dream-tree-v7.2.1-cachefix';
 const ASSETS=[
-  './','./index.html','./css/app.css','./js/app.js','./js/firebase-cloud.js','./js/firebase-config.js',
+  './','./index.html','./css/app.css?v=7.2.1','./js/app.js?v=7.2.1','./js/firebase-cloud.js?v=7.2.1','./js/firebase-config.js',
   './manifest.json','./assets/images/brand-logo.png','./favicon-16.png','./favicon-32.png',
   './apple-touch-icon.png','./icon-192.png','./icon-512.png'
 ];

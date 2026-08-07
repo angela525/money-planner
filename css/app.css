@@ -463,3 +463,12 @@ body.auth-locked .app,body.auth-locked .nav,body.auth-locked .brand-footer{filte
 .onboarding-card input:focus{border-color:#57bbed;box-shadow:0 0 0 4px rgba(67,170,230,.12)}
 .cloud-welcome{font-size:11px;color:#6f8798}
 @media(max-width:600px){.onboarding-card{padding:24px 18px;border-radius:25px}.onboarding-card h2{font-size:23px}}
+
+/* Dream Tree V7.2 — goal editor */
+.goal-card{padding:14px 0;border-bottom:1px solid var(--line)}
+.goal-card:last-child{border-bottom:0}.goalrow{grid-template-columns:1.15fr .8fr .9fr .85fr .8fr 1fr auto;align-items:end}
+.goalrow label{display:grid;gap:6px;min-width:0}.goalrow label>span{font-size:12px;font-weight:700;color:var(--muted)}
+.goal-delete{margin-bottom:1px}.goal-stats{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--soft);font-size:12px;color:var(--muted)}
+.goal-stats b{color:var(--ink);font-size:13px}
+@media(max-width:900px){.goalrow{grid-template-columns:1fr 1fr}.goal-delete{width:100%}.goal-stats{display:grid;grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.goalrow{grid-template-columns:1fr}.goal-stats{grid-template-columns:1fr 1fr}}
