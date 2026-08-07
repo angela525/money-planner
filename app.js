@@ -1,0 +1,201 @@
+const KEY='moneyPlannerV25';const $=id=>document.getElementById(id);const uid=()=>Math.random().toString(36).slice(2,10);const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));const money=n=>'NT$ '+Math.round(Number(n||0)).toLocaleString('zh-TW');
+let app=JSON.parse(localStorage.getItem(KEY)||'null')||{month:new Date().toISOString().slice(0,7),accounts:[{id:'a1',name:'國泰薪資帳戶',free:false,relay:false,freeCount:0,balance:0},{id:'a2',name:'iLEO',free:true,relay:true,freeCount:99,balance:0},{id:'a3',name:'Line Pay',free:false,relay:false,freeCount:0,balance:0},{id:'a4',name:'證券戶',free:false,relay:false,freeCount:0,balance:0}],months:{}};
+app.accounts=app.accounts||[];app.months=app.months||{};app.accounts.forEach(a=>{a.balance=Number(a.balance||0);a.freeCount=Number(a.freeCount||0)});
+function emptyMonth(copyGoals=[]){return{incomes:[],expenses:[],living:0,salaryAccount:app.accounts[0]?.id||'',goals:JSON.parse(JSON.stringify(copyGoals)),allocations:[],confirmed:false,transfers:[],reconciliation:[],reconciliationClosed:false,reconciliationDate:'',adjustments:[],openingBalances:Object.fromEntries(app.accounts.map(a=>[a.id,Number(a.balance||0)])),cashCounts:{}}}
+function M(){if(!app.months[app.month])app.months[app.month]=emptyMonth();let m=app.months[app.month];m.incomes??=[];m.expenses??=[];m.goals??=[];m.allocations??=[];m.transfers??=[];m.reconciliation??=[];m.adjustments??=[];m.openingBalances??=Object.fromEntries(app.accounts.map(a=>[a.id,Number(a.balance||0)]));m.cashCounts??={};return m}
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(app));
+  if(!window.__dreamCloudApplying&&typeof window.dreamCloudQueue==='function'){
+    window.dreamCloudQueue(JSON.parse(JSON.stringify(app)));
+  }
+}
+window.DreamTreeApp={
+  storageKey:KEY,
+  getData:()=>JSON.parse(JSON.stringify(app)),
+  applyData:(data)=>{
+    if(!data||!Array.isArray(data.accounts)||!data.months)throw new Error('雲端資料格式不正確');
+    window.__dreamCloudApplying=true;
+    app=JSON.parse(JSON.stringify(data));
+    app.accounts=app.accounts||[];app.months=app.months||{};
+    app.accounts.forEach(a=>{a.balance=Number(a.balance||0);a.freeCount=Number(a.freeCount||0)});
+    localStorage.setItem(KEY,JSON.stringify(app));
+    M();render();
+    window.__dreamCloudApplying=false;
+  },
+  hasMeaningfulData:()=>Object.keys(app.months||{}).length>0||app.accounts.some(a=>Number(a.balance||0)!==0),
+  freshData:()=>({
+    month:new Date().toISOString().slice(0,7),
+    accounts:[
+      {id:'a1',name:'國泰薪資帳戶',free:false,relay:false,freeCount:0,balance:0},
+      {id:'a2',name:'iLEO',free:true,relay:true,freeCount:99,balance:0},
+      {id:'a3',name:'Line Pay',free:false,relay:false,freeCount:0,balance:0},
+      {id:'a4',name:'證券戶',free:false,relay:false,freeCount:0,balance:0}
+    ],months:{}
+  }),
+  addStarterDream:(name,target=0)=>{
+    const clean=String(name||'').trim();
+    if(!clean)return;
+    const m=M();
+    if(!m.goals.some(g=>String(g.name||'').trim()===clean)){
+      m.goals.push({id:uid(),name:clean,target:Number(target||0),saved:0,monthly:0,deadline:'',mode:'flex',priority:1,account:app.accounts[0]?.id||''});
+      save();render();
+    }
+  }
+};
+window.dispatchEvent(new CustomEvent('dreamtree:app-ready'));
+function opts(v){return app.accounts.map(a=>`<option value="${a.id}" ${a.id===v?'selected':''}>${esc(a.name)}</option>`).join('')}function accountName(id){return app.accounts.find(a=>a.id===id)?.name||'未指定'}
+function showPage(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===id));if(id==='flow')renderFlow();if(id==='reconcile')renderReconciliation()}
+$('monthPicker').value=app.month;$('monthPicker').onchange=e=>switchMonth(e.target.value);
+function switchMonth(v){if(!v)return;app.month=v;M();save();$('monthPicker').value=v;render()}
+function shiftMonth(d){let [y,m]=app.month.split('-').map(Number),dt=new Date(y,m-1+d,1);switchMonth(`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}`)}
+function nextMonthOf(v){let [y,m]=v.split('-').map(Number),dt=new Date(y,m,1);return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}`}
+function createNextMonth(){let target=nextMonthOf(app.month);if(app.months[target]&&!confirm(`${target} 已有資料，是否切換過去？`)){return}if(app.months[target])return switchMonth(target);let cur=M(),copyFixed=confirm('是否沿用本月的固定支出、生活預算與儲蓄目標？');let nm=emptyMonth(copyFixed?cur.goals:[]);if(copyFixed){nm.living=cur.living;nm.salaryAccount=cur.salaryAccount;nm.expenses=cur.expenses.filter(x=>x.type==='fixed').map(x=>({...x,id:uid(),date:target+'-'+String((x.date||'').split('-')[2]||'01').padStart(2,'0'),done:false}));}app.months[target]=nm;switchMonth(target)}
+function editable(){if(M().reconciliationClosed){alert('這個月份已完成清算。請先到「清算」頁按重新編輯。');return false}return true}
+function total(k,filter=()=>true){return (M()[k]||[]).filter(filter).reduce((s,x)=>s+Number(x.amount||0),0)}function totalIncome(){return total('incomes')}function received(){return total('incomes',x=>x.done)}function totalExpenses(){return total('expenses')}function paid(){return total('expenses',x=>x.done)}function freeMoney(){return Math.max(0,totalIncome()-totalExpenses()-Number(M().living||0))}
+function addFund(k){if(!editable())return;M()[k].push({id:uid(),date:app.month+'-01',name:k==='incomes'?'新收入':'新支出',type:k==='incomes'?'salary':'fixed',amount:0,account:M().salaryAccount||app.accounts[0]?.id||'',done:false});save();render()}function patchFund(k,id,key,v){if(!editable())return render();let x=M()[k].find(x=>x.id===id);x[key]=key==='amount'?Number(v):key==='done'?Boolean(v):v;save();render()}function delFund(k,id){if(!editable())return;M()[k]=M()[k].filter(x=>x.id!==id);save();render()}
+function addGoal(){if(!editable())return;M().goals.push({id:uid(),name:'新目標',target:0,saved:0,monthly:0,deadline:'',mode:'fixed',priority:2,account:app.accounts[0]?.id||''});save();render()}function patchGoal(id,k,v){if(!editable())return render();let g=M().goals.find(x=>x.id===id);g[k]=['target','saved','monthly','priority'].includes(k)?Number(v):v;save();render()}function delGoal(id){if(!editable())return;M().goals=M().goals.filter(x=>x.id!==id);save();render()}
+function addAlloc(){if(!editable())return;M().allocations.push({id:uid(),name:'新分配',amount:0,account:app.accounts[0]?.id||''});save();render()}function patchAlloc(id,k,v){if(!editable())return render();let x=M().allocations.find(x=>x.id===id);x[k]=k==='amount'?Number(v):v;save();render()}function delAlloc(id){if(!editable())return;M().allocations=M().allocations.filter(x=>x.id!==id);save();render()}
+function autoPlan(){if(!editable())return;let left=freeMoney(),arr=[];let goals=[...M().goals].filter(g=>g.mode!=='pause').sort((a,b)=>(a.mode==='fixed'?0:1)-(b.mode==='fixed'?0:1)||a.priority-b.priority);for(const g of goals){let remain=Math.max(0,Number(g.target)-Number(g.saved)),need=Math.min(remain,Number(g.monthly||0)),use=Math.min(left,need);if(use>0){arr.push({id:uid(),name:g.name,amount:use,account:g.account});left-=use}}if(left>0){let invest=Math.round(left*.4);arr.push({id:uid(),name:'投資',amount:invest,account:app.accounts.find(a=>a.name.includes('證券'))?.id||app.accounts[0]?.id||''});left-=invest}if(left>0)arr.push({id:uid(),name:'零花錢',amount:left,account:app.accounts.find(a=>a.relay)?.id||app.accounts[0]?.id||''});M().allocations=arr;M().confirmed=false;M().transfers=[];save();render()}
+function confirmPlan(){if(!editable())return;let diff=freeMoney()-M().allocations.reduce((s,x)=>s+Number(x.amount||0),0);if(Math.abs(diff)>.5)return alert(diff>0?`還有 ${money(diff)} 尚未分配`:`目前超出 ${money(-diff)}`);M().confirmed=true;buildFlow();save();render();showPage('flow')}function unlockPlan(){if(!editable())return;M().confirmed=false;save();render()}
+function addAccount(){app.accounts.push({id:uid(),name:'新帳戶',free:false,relay:false,freeCount:0,balance:0});Object.values(app.months).forEach(m=>{m.openingBalances??={};m.openingBalances[app.accounts.at(-1).id]=0});save();render()}function patchAccount(id,k,v){let a=app.accounts.find(x=>x.id===id);if(k==='relay'&&v)app.accounts.forEach(x=>x.relay=false);a[k]=['freeCount','balance'].includes(k)?Number(v):v;save();render()}function delAccount(id){if(app.accounts.length<=1)return alert('至少保留一個帳戶');if(!confirm('刪除帳戶可能影響歷史紀錄，確定刪除？'))return;app.accounts=app.accounts.filter(x=>x.id!==id);save();render()}
+function buildFlow(){let m=M(),salary=app.accounts.find(a=>a.id===m.salaryAccount)||app.accounts[0],relay=app.accounts.find(a=>a.relay&&a.free),groups={};m.allocations.filter(x=>x.amount>0&&x.account!==salary.id).forEach(x=>{(groups[x.account]??=[]).push(x)});let dest=Object.entries(groups),transfers=[],directFree=salary.free&&(salary.freeCount===0||salary.freeCount>=dest.length);if(directFree||!relay||relay.id===salary.id){dest.forEach(([id,items],i)=>transfers.push({id:uid(),from:salary.id,to:id,amount:items.reduce((s,x)=>s+x.amount,0),items:items.map(x=>x.name),free:salary.free&&(salary.freeCount===0||i<salary.freeCount),done:false}))}else{let amount=dest.reduce((s,[,items])=>s+items.reduce((a,x)=>a+x.amount,0),0);if(amount>0)transfers.push({id:uid(),from:salary.id,to:relay.id,amount,items:['集中資金'],free:salary.free&&(salary.freeCount===0||salary.freeCount>=1),done:false});let limit=relay.freeCount===0?Infinity:relay.freeCount;dest.filter(([id])=>id!==relay.id).forEach(([id,items],i)=>transfers.push({id:uid(),from:relay.id,to:id,amount:items.reduce((s,x)=>s+x.amount,0),items:items.map(x=>x.name),free:relay.free&&i<limit,done:false}))}let old=m.transfers||[];transfers.forEach(t=>{let o=old.find(x=>x.from===t.from&&x.to===t.to&&x.amount===t.amount);if(o)t.done=o.done});m.transfers=transfers}
+function toggleTransfer(id,v){let t=M().transfers.find(x=>x.id===id);t.done=v;save();renderFlow();renderHome()}
+function accountFlow(id){let m=M(),opening=Number(m.openingBalances?.[id]??app.accounts.find(a=>a.id===id)?.balance??0),income=(m.incomes||[]).filter(x=>x.done&&x.account===id).reduce((s,x)=>s+Number(x.amount||0),0),expense=(m.expenses||[]).filter(x=>x.done&&x.account===id).reduce((s,x)=>s+Number(x.amount||0),0),tin=(m.transfers||[]).filter(x=>x.done&&x.to===id).reduce((s,x)=>s+Number(x.amount||0),0),tout=(m.transfers||[]).filter(x=>x.done&&x.from===id).reduce((s,x)=>s+Number(x.amount||0),0),adj=(m.adjustments||[]).filter(x=>x.account===id).reduce((s,x)=>s+Number(x.amount||0),0);return{opening,income,expense,tin,tout,adj,book:opening+income-expense+tin-tout+adj}}
+function recRows(){let m=M();app.accounts.forEach(a=>{if(!m.reconciliation.some(r=>r.account===a.id)){let b=accountFlow(a.id).book;m.reconciliation.push({account:a.id,book:b,actual:b,note:''})}});m.reconciliation=m.reconciliation.filter(r=>app.accounts.some(a=>a.id===r.account));return m.reconciliation}
+function calculateBookBalances(){if(M().reconciliationClosed)return alert('請先按「重新編輯」');recRows().forEach(r=>{let old=r.book;r.book=accountFlow(r.account).book;if(r.actual===undefined||r.actual===null||Number(r.actual)===Number(old))r.actual=r.book});save();renderReconciliation()}
+function patchRec(id,k,v){if(M().reconciliationClosed)return;let r=recRows().find(x=>x.account===id);r[k]=['book','actual'].includes(k)?Number(v):v;save();renderReconciliation()}
+function precheck(){let m=M(),items=[];let inc=m.incomes.filter(x=>!x.done),exp=m.expenses.filter(x=>!x.done),tr=(m.transfers||[]).filter(x=>!x.done),unallocated=Math.abs(freeMoney()-m.allocations.reduce((s,x)=>s+Number(x.amount||0),0));if(inc.length)items.push({bad:true,text:`${inc.length} 筆收入尚未入帳`});if(exp.length)items.push({bad:true,text:`${exp.length} 筆支出尚未付款`});if(tr.length)items.push({bad:true,text:`${tr.length} 筆轉帳尚未完成`});if(unallocated>.5)items.push({bad:true,text:`分配方案仍有 ${money(unallocated)} 差異`});if(!items.length)items.push({bad:false,text:'收入、支出、轉帳與分配方案皆已確認'});return items}
+function closeReconciliation(){let m=M(),checks=precheck().filter(x=>x.bad);if(checks.length&&!confirm(`仍有 ${checks.length} 類未完成事項。確定要清算並將它們留在本月紀錄嗎？`))return;let rows=recRows(),unexplained=rows.filter(r=>Math.abs(Number(r.actual)-Number(r.book))>.5&&!String(r.note||'').trim());if(unexplained.length)return alert('仍有差額尚未填寫原因，請先補充後再清算。');m.adjustments=(m.adjustments||[]).filter(x=>x.source!=='reconciliation');rows.forEach(r=>{let diff=Number(r.actual||0)-Number(r.book||0);if(Math.abs(diff)>.5)m.adjustments.push({id:uid(),account:r.account,amount:diff,note:r.note,date:app.month+'-末日',source:'reconciliation'});let a=app.accounts.find(x=>x.id===r.account);if(a)a.balance=Number(r.actual||0)});m.reconciliationClosed=true;m.reconciliationDate=new Date().toISOString();let next=nextMonthOf(app.month);if(app.months[next]){app.months[next].openingBalances=Object.fromEntries(app.accounts.map(a=>[a.id,Number(a.balance||0)]));app.months[next].reconciliation=[]}save();render();renderReconciliation();alert('月底清算完成：差額已建立調整紀錄，實際餘額已成為下月基準。')}
+function unlockReconciliation(){M().reconciliationClosed=false;save();renderReconciliation()}
+const cashDenoms=[1000,500,100,50,10,5,1];function renderCash(){let m=M(),sel=$('cashAccount');sel.innerHTML=opts(sel.value||app.accounts.find(a=>/現金/i.test(a.name))?.id||app.accounts[0]?.id||'');let aid=sel.value;m.cashCounts[aid]??={};$('cashCounter').innerHTML=cashDenoms.map(d=>`<div class="cash-item"><span>${d} 元 ×</span><input type="number" min="0" value="${m.cashCounts[aid][d]||0}" onchange="patchCash('${aid}',${d},this.value)"></div>`).join('');updateCashTotal();sel.onchange=renderCash}
+function patchCash(aid,d,v){M().cashCounts[aid]??={};M().cashCounts[aid][d]=Math.max(0,Number(v||0));save();updateCashTotal()}function cashSum(aid){return Object.entries(M().cashCounts[aid]||{}).reduce((s,[d,c])=>s+Number(d)*Number(c),0)}function updateCashTotal(){let aid=$('cashAccount')?.value;if($('cashTotal'))$('cashTotal').textContent=money(cashSum(aid))}function applyCashCount(){let aid=$('cashAccount').value,r=recRows().find(x=>x.account===aid);if(!r)return;r.actual=cashSum(aid);if(!r.note)r.note='現金盤點';save();renderReconciliation()}
+function renderReconciliation(){let m=M(),rows=recRows(),locked=m.reconciliationClosed,checks=precheck();$('precheckList').innerHTML=checks.map(x=>`<div class="line"><span>${x.bad?'⚠️':'✅'} ${esc(x.text)}</span></div>`).join('');$('precheckBadge').textContent=checks.some(x=>x.bad)?'有未完成事項':'可以清算';$('precheckBadge').className='badge '+(checks.some(x=>x.bad)?'warn':'ok');$('reconcileRows').innerHTML=rows.map(r=>{let d=Number(r.actual||0)-Number(r.book||0);return `<div class="reconcile-row"><b>${esc(accountName(r.account))}</b><input type="number" ${locked?'disabled':''} value="${Number(r.book||0)}" onchange="patchRec('${r.account}','book',this.value)"><input type="number" ${locked?'disabled':''} value="${Number(r.actual||0)}" onchange="patchRec('${r.account}','actual',this.value)"><b class="${d>0?'diff-pos':d<0?'diff-neg':''}">${d>0?'+':''}${money(d)}</b><input ${locked?'disabled':''} value="${esc(r.note||'')}" placeholder="例如：漏記手續費、現金支出" onchange="patchRec('${r.account}','note',this.value)"></div>`}).join('');let bt=rows.reduce((s,r)=>s+Number(r.book||0),0),at=rows.reduce((s,r)=>s+Number(r.actual||0),0),dt=at-bt;$('bookTotal').textContent=money(bt);$('actualTotal').textContent=money(at);$('differenceTotal').textContent=(dt>0?'+':'')+money(dt);$('differenceTotal').className=dt>0?'diff-pos':dt<0?'diff-neg':'';$('reconcileBadge').textContent=locked?'已完成清算':'尚未清算';$('reconcileBadge').className='badge '+(locked?'ok':'warn');let diffs=rows.filter(r=>Math.abs(Number(r.actual)-Number(r.book))>.5);$('reconcileNotice').innerHTML=locked?`<div class="notice">已於 ${new Date(m.reconciliationDate).toLocaleString('zh-TW')} 完成清算，差額調整與實際餘額均已保存。</div>`:diffs.length?`<div class="notice warn">目前有 ${diffs.length} 個帳戶存在差額。所有差額都需填寫原因。</div>`:`<div class="notice">所有帳戶帳面金額與實際金額一致。</div>`;$('adjustmentRows').innerHTML=(m.adjustments||[]).length?m.adjustments.map(a=>`<div class="adjustment"><b>${esc(accountName(a.account))}　${Number(a.amount)>0?'+':''}${money(a.amount)}</b><div class="muted">${esc(a.note||'月底調整')}・${esc(a.date||app.month)}</div></div>`).join(''):'<div class="empty">完成清算後，差額會自動建立調整紀錄</div>';$('adjustmentCount').textContent=`${(m.adjustments||[]).length} 筆`;renderCash()}
+function renderFundRows(){let typesIn={salary:'薪資',bonus:'獎金',parttime:'兼職',investment:'投資收入',other:'其他'},typesEx={fixed:'固定支出',once:'一次性支出',living:'生活預算'};const draw=(k,target,types)=>{$(target).innerHTML=(M()[k]||[]).map(x=>`<div class="fund-row"><input type="date" value="${x.date||''}" onchange="patchFund('${k}','${x.id}','date',this.value)"><input class="wide" value="${esc(x.name)}" placeholder="項目名稱" onchange="patchFund('${k}','${x.id}','name',this.value)"><select onchange="patchFund('${k}','${x.id}','type',this.value)">${Object.entries(types).map(([v,n])=>`<option value="${v}" ${x.type===v?'selected':''}>${n}</option>`).join('')}</select><input type="number" value="${Number(x.amount||0)}" placeholder="金額" onchange="patchFund('${k}','${x.id}','amount',this.value)"><select onchange="patchFund('${k}','${x.id}','account',this.value)">${opts(x.account)}</select><label class="switch"><input type="checkbox" ${x.done?'checked':''} onchange="patchFund('${k}','${x.id}','done',this.checked)">${k==='incomes'?'已入帳':'已付款'}</label><button class="icon" onclick="delFund('${k}','${x.id}')">刪除</button></div>`).join('')||'<div class="empty">尚無資料</div>'};draw('incomes','incomeRows',typesIn);draw('expenses','expenseRows',typesEx)}
+function goalSuggestedMonthly(g){
+  const remain=Math.max(0,Number(g.target||0)-Number(g.saved||0));
+  if(!remain)return 0;
+  if(!g.deadline)return Number(g.monthly||0);
+  const now=new Date(), end=new Date(g.deadline+'T23:59:59');
+  if(Number.isNaN(end.getTime()))return Number(g.monthly||0);
+  const months=Math.max(1,(end.getFullYear()-now.getFullYear())*12+(end.getMonth()-now.getMonth())+1);
+  return Math.ceil(remain/months);
+}
+function renderGoals(){$('goalRows').innerHTML=M().goals.map(g=>{
+  const target=Number(g.target||0),saved=Number(g.saved||0),remain=Math.max(0,target-saved),pct=target?Math.min(100,Math.round(saved/target*100)):0,suggest=goalSuggestedMonthly(g);
+  return `<div class="goal-card"><div class="goalrow"><label><span>目標名稱</span><input class="wide" value="${esc(g.name)}" placeholder="例如：MAC" onchange="patchGoal('${g.id}','name',this.value)"></label><label><span>目標金額</span><input type="number" min="0" value="${target}" placeholder="50000" onchange="patchGoal('${g.id}','target',this.value)"></label><label><span>期限</span><input type="date" value="${g.deadline||''}" onchange="patchGoal('${g.id}','deadline',this.value)"></label><label><span>投入方式</span><select onchange="patchGoal('${g.id}','mode',this.value)"><option value="fixed" ${g.mode==='fixed'?'selected':''}>每月固定</option><option value="flex" ${g.mode==='flex'?'selected':''}>有餘再存</option><option value="pause" ${g.mode==='pause'?'selected':''}>暫停</option></select></label><label><span>優先級</span><select onchange="patchGoal('${g.id}','priority',this.value)"><option value="1" ${g.priority==1?'selected':''}>🔴 高</option><option value="2" ${g.priority==2?'selected':''}>🟡 中</option><option value="3" ${g.priority==3?'selected':''}>🟢 低</option></select></label><label><span>資金帳戶</span><select onchange="patchGoal('${g.id}','account',this.value)">${opts(g.account)}</select></label><button class="icon goal-delete" onclick="delGoal('${g.id}')">刪除</button></div><div class="goal-stats"><span>已累積 <b>${money(saved)}</b></span><span>完成進度 <b>${pct}%</b></span><span>還差 <b>${money(remain)}</b></span><span>系統建議每月 <b>${money(suggest)}</b></span></div></div>`}).join('')||'<div class="empty">尚無目標</div>'}
+function renderAlloc(){let m=M();$('allocationRows').className=m.confirmed?'locked':'';$('allocationRows').innerHTML=m.allocations.map(x=>`<div class="allocrow"><input class="wide" ${m.confirmed?'disabled':''} value="${esc(x.name)}" onchange="patchAlloc('${x.id}','name',this.value)"><input type="number" ${m.confirmed?'disabled':''} value="${x.amount}" onchange="patchAlloc('${x.id}','amount',this.value)"><select ${m.confirmed?'disabled':''} onchange="patchAlloc('${x.id}','account',this.value)">${opts(x.account)}</select><button class="icon" ${m.confirmed?'disabled':''} onclick="delAlloc('${x.id}')">刪除</button></div>`).join('')||'<div class="empty">按「自動規劃」產生建議</div>';let diff=freeMoney()-m.allocations.reduce((s,x)=>s+Number(x.amount||0),0);$('allocationNotice').innerHTML=diff>0?`<div class="notice warn">還有 ${money(diff)} 尚未分配</div>`:diff<0?`<div class="notice bad">目前超出 ${money(-diff)}</div>`:`<div class="notice">資金已完整分配</div>`;$('lockBadge').textContent=m.reconciliationClosed?'月份已清算':m.confirmed?'已確認鎖定':'編輯中';$('lockBadge').className='badge '+(m.reconciliationClosed||m.confirmed?'ok':'')}
+function renderAccounts(){$('accountRows').innerHTML=app.accounts.map(a=>{let f=accountFlow(a.id);return `<div class="account"><div class="account-head"><input style="font-weight:750;border:0;font-size:16px;width:65%" value="${esc(a.name)}" onchange="patchAccount('${a.id}','name',this.value)"><button class="icon" onclick="delAccount('${a.id}')">刪除</button></div><div class="balance-grid"><div class="balance-cell"><small>月初餘額</small><b>${money(f.opening)}</b></div><div class="balance-cell"><small>已完成流入</small><b>${money(f.income+f.tin)}</b></div><div class="balance-cell"><small>已完成流出</small><b>${money(f.expense+f.tout)}</b></div><div class="balance-cell"><small>調整</small><b>${Number(f.adj)>0?'+':''}${money(f.adj)}</b></div><div class="balance-cell"><small>目前帳面餘額</small><b>${money(f.book)}</b></div></div><div class="muted" style="margin-top:8px">最近實際基準：${money(a.balance||0)}</div><div class="mini-grid"><label class="switch"><input type="checkbox" ${a.free?'checked':''} onchange="patchAccount('${a.id}','free',this.checked)">免手續費轉出</label><label class="switch"><input type="checkbox" ${a.relay?'checked':''} onchange="patchAccount('${a.id}','relay',this.checked)">優先中轉帳戶</label><div class="field" style="margin:0"><label>每月免費次數（0＝不限）</label><input type="number" min="0" value="${a.freeCount||0}" onchange="patchAccount('${a.id}','freeCount',this.value)"></div></div></div>`}).join('');renderMonthHistory()}
+function renderMonthHistory(){let keys=Object.keys(app.months).sort().reverse();$('monthCount').textContent=`${keys.length} 個月`;$('monthHistory').innerHTML=keys.map(k=>{let m=app.months[k];return `<div class="history-row"><span><b>${k}</b><small>${m.reconciliationClosed?'已完成清算':'進行中'}・收入 ${money((m.incomes||[]).reduce((s,x)=>s+Number(x.amount||0),0))}</small></span><span class="badge ${m.reconciliationClosed?'ok':'warn'}">${m.reconciliationClosed?'已鎖定':'可編輯'}</span><button class="icon" onclick="switchMonth('${k}')">開啟</button></div>`}).join('')||'<div class="empty">尚無月份資料</div>'}
+function health(){let m=M(),score=100,items=[],alloc=m.allocations.reduce((s,x)=>s+Number(x.amount||0),0),free=freeMoney(),saving=m.allocations.filter(x=>m.goals.some(g=>g.name===x.name)).reduce((s,x)=>s+x.amount,0),paidTransfers=(m.transfers||[]).filter(x=>!x.free).length;if(Math.abs(free-alloc)>.5){score-=20;items.push('⚠️ 本月資金尚未完整分配')}else items.push('✅ 本月資金已完整分配');if(totalIncome()>0&&saving/totalIncome()<.1){score-=15;items.push('⚠️ 儲蓄比例低於 10%')}else items.push('✅ 儲蓄安排比例良好');if(totalIncome()>0&&totalExpenses()/totalIncome()>.6){score-=15;items.push('⚠️ 支出超過收入的 60%')}else items.push('✅ 支出比例在可控範圍');if(paidTransfers>1){score-=10;items.push(`⚠️ 仍有 ${paidTransfers} 筆可能付費轉帳`)}else items.push('✅ 已優先使用免手續費帳戶');return{score:Math.max(0,score),items}}
+function renderHome(){
+  let m=M(),f=freeMoney();
+  $('hIncome').textContent=money(totalIncome());
+  $('hReceived').textContent=money(received());
+  $('hExpense').textContent=money(totalExpenses());
+  $('hPaid').textContent=money(paid());
+  const incomeTotal=totalIncome(), expenseTotal=totalExpenses();
+  if($('receivedTrend'))$('receivedTrend').textContent=(incomeTotal?Math.round(received()/incomeTotal*100):0)+'% 已完成';
+  if($('paidTrend'))$('paidTrend').textContent=(expenseTotal?Math.round(paid()/expenseTotal*100):0)+'% 已完成';
+  $('hFree').textContent=money(f);
+  let ts=m.transfers||[],done=ts.filter(x=>x.done).length,p=ts.length?Math.round(done/ts.length*100):0;
+  $('ringText').textContent=p+'%';
+  $('ring').style.background=`conic-gradient(var(--sky) ${p}%,#e9f3fa ${p}%)`;
+  $('homeBar').style.width=p+'%';
+  $('homeStatus').textContent=m.reconciliationClosed?'本月已清算':m.confirmed?(p===100?'本月已完成':'規劃已確認'):'尚未確認';
+  if($('executionProgressText'))$('executionProgressText').textContent=p===100?'本月任務完成':p>0?`已完成 ${p}%`:'等待第一步';
+
+  const realPending=[
+    ...m.incomes.filter(x=>!x.done).map(x=>({icon:'＋',t:'收入待入帳',n:x.name||'新收入',a:x.amount,done:false})),
+    ...m.expenses.filter(x=>!x.done).map(x=>({icon:'−',t:'支出待付款',n:x.name||'待付款項目',a:x.amount,done:false})),
+    ...ts.filter(x=>!x.done).map(x=>({icon:'↗',t:'待執行轉帳',n:`${accountName(x.from)} → ${accountName(x.to)}`,a:x.amount,done:false}))
+  ];
+  const guideTasks=[
+    {icon:m.incomes.length?'✓':'1',n:'登記本月收入',t:m.incomes.length?'已建立收入資料':'先建立收入來源',a:'',done:m.incomes.length>0},
+    {icon:m.confirmed?'✓':'2',n:'完成本月規劃',t:m.confirmed?'規劃已確認':'安排儲蓄、投資與生活資金',a:'',done:m.confirmed},
+    {icon:ts.length&&done===ts.length?'✓':'3',n:'執行資金轉帳',t:ts.length?(done===ts.length?'全部完成':`剩餘 ${ts.length-done} 筆`):'確認規劃後產生轉帳流程',a:'',done:ts.length>0&&done===ts.length},
+    {icon:m.reconciliationClosed?'✓':'4',n:'月底核對帳戶',t:m.reconciliationClosed?'本月已完成清算':'月末確認實際餘額',a:'',done:m.reconciliationClosed}
+  ];
+  const taskData=realPending.length?realPending.slice(0,5):guideTasks;
+  $('homeTasks').innerHTML=`<div class="task-list-premium">${taskData.map(x=>`
+    <div class="task-item-premium ${x.done?'done':''}">
+      <span class="task-dot">${x.icon}</span>
+      <span><b>${esc(x.n)}</b><small>${esc(x.t)}</small></span>
+      <span class="task-value">${typeof x.a==='number'?money(x.a):''}</span>
+    </div>`).join('')}</div>`;
+
+  $('homeSummary').innerHTML=`<div class="line"><span>目前月份</span><b>${app.month}</b></div><div class="line"><span>預計可規劃資金</span><b>${money(f)}</b></div><div class="line"><span>已安排</span><b>${money(m.allocations.reduce((s,x)=>s+Number(x.amount||0),0))}</b></div><div class="line"><span>清算狀態</span><b>${m.reconciliationClosed?'已完成':'尚未完成'}</b></div>`;
+  let h=m.confirmed?health():null;
+  $('healthScore').textContent=h?h.score:'--';
+  $('healthLabel').textContent=h?h.score+' 分':'尚未檢查';
+  $('healthLabel').className='badge '+(h?(h.score>=85?'ok':h.score>=65?'warn':'bad'):'');
+  $('healthList').innerHTML=h?h.items.slice(0,5).map(x=>`<div class="health-item">${x}</div>`).join(''):'';
+
+  const goalItems=[...(m.goals||[]),...(m.purchases||[])];
+  if($('goalPreview')){
+    $('goalPreview').innerHTML=goalItems.length?goalItems.slice(0,3).map(g=>{
+      const target=Number(g.target||g.amount||0), saved=Number(g.saved||0);
+      const pct=target?Math.min(100,Math.round(saved/target*100)):0;
+      return `<div class="goal-item">
+        <div class="goal-row"><b>${esc(g.name||'我的夢想')}</b><span>${pct>=100?'已開花':'成長中'}</span></div>
+        <div class="goal-progress"><span style="width:${pct}%"></span></div>
+        <div class="goal-meta"><span>${pct}%</span><span>還差 ${money(Math.max(0,target-saved))}</span></div>
+      </div>`;
+    }).join(''):`<div class="goal-item"><div class="goal-row"><b>還沒有建立夢想</b><span>從第一顆種子開始</span></div><div class="goal-progress"><span style="width:0%"></span></div><div class="goal-meta"><span>0%</span><span>等待發芽</span></div></div>`;
+  }
+  const completed=goalItems.filter(g=>Number(g.target||g.amount||0)>0&&Number(g.saved||0)>=Number(g.target||g.amount||0));
+  if($('forestStrip'))$('forestStrip').innerHTML=(completed.length?completed:[{}]).slice(0,10).map((g,i)=>`<div class="forest-tree" title="${esc(g.name||'第一顆種子')}">${completed.length?(i%3===0?'🌳':i%3===1?'🌸':'🍎'):'🌱'}</div>`).join('');
+  if($('dreamTimeline')){
+    const events=[
+      ...completed.map(g=>({icon:'🌳',title:`完成 ${g.name||'夢想'}`,sub:'一棵夢想正式長成。'})),
+      ...(m.confirmed?[{icon:'🌿',title:'完成本月規劃',sub:'今天的規劃成為明天的養分。'}]:[]),
+      {icon:'🌱',title:'Dream Tree 啟程',sub:'從今天開始，記錄每一個夢想。'}
+    ];
+    $('dreamTimeline').innerHTML=events.slice(0,6).map(e=>`<div class="timeline-item"><span class="timeline-dot">${e.icon}</span><span><b>${esc(e.title)}</b><small>${esc(e.sub)}</small></span></div>`).join('');
+  }
+}
+function renderFlow(){let m=M(),ts=m.transfers||[];if(!ts.length){$('flowChart').innerHTML='<div class="empty">請先確認本月規劃</div>';$('transferList').innerHTML='<div class="empty">尚無待轉帳項目</div>';$('feeText').textContent='尚未產生';$('freeQuota').innerHTML='<div class="empty">尚無使用資料</div>';return}let salary=app.accounts.find(a=>a.id===m.salaryAccount)||app.accounts[0],relay=app.accounts.find(a=>a.relay&&a.free),usingRelay=relay&&ts.some(t=>t.to===relay.id&&t.from===salary.id);$('flowChart').innerHTML=`<div class="flow"><div class="flow-node primary"><b>${esc(salary.name)}</b><div class="muted">主要資金帳戶</div></div>${usingRelay?`<div class="flow-arrow">↓</div><div class="flow-node primary"><b>${esc(relay.name)}</b> <span class="badge ok">免手續費中轉</span></div>`:''}<div class="flow-arrow">↓</div><div class="branch">${ts.filter(t=>!(usingRelay&&t.to===relay.id)).map(t=>`<div class="flow-node"><b>${esc(accountName(t.to))}</b><div>${money(t.amount)}</div><small class="muted">${t.items.join('、')}</small></div>`).join('')}</div></div>`;let paidCount=ts.filter(t=>!t.free).length;$('feeText').textContent=paidCount?`可能付費 ${paidCount} 筆`:'預估手續費 0 元';$('feeText').className='badge '+(paidCount?'warn':'ok');$('transferList').innerHTML=ts.map(t=>`<label class="transfer"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTransfer('${t.id}',this.checked)"><div class="grow"><b>${esc(accountName(t.from))} → ${esc(accountName(t.to))}</b><div class="muted">${t.items.join('、')}</div></div><div style="text-align:right"><b>${money(t.amount)}</b><br><span class="badge ${t.free?'ok':'warn'}">${t.free?'免手續費':'可能付費'}</span></div></label>`).join('');$('transferProgress').textContent=Math.round(ts.filter(x=>x.done).length/ts.length*100)+'%';$('freeQuota').innerHTML=app.accounts.filter(a=>a.free).map(a=>{let used=ts.filter(t=>t.from===a.id&&t.free).length,limit=a.freeCount===0?'不限':a.freeCount,remain=a.freeCount===0?'不限':Math.max(0,a.freeCount-used);return`<div class="line"><span><b>${esc(a.name)}</b><small>本月已使用 ${used} 次</small></span><span>額度 ${limit}<br><small>剩餘 ${remain}</small></span></div>`}).join('')||'<div class="empty">尚未設定免手續費帳戶</div>'}
+function download(name,text,type){let b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),500)}function exportBackup(){download(`資金規劃系統備份_${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(app,null,2),'application/json')}function importBackup(file){if(!file)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!d.accounts||!d.months)throw 0;if(confirm('匯入將覆蓋目前資料，確定繼續？')){app=d;save();location.reload()}}catch(e){alert('備份檔格式不正確')}};r.readAsText(file)}function csvCell(v){return `"${String(v??'').replace(/"/g,'""')}"`}function exportReconcileCSV(){let rows=recRows(),data=[['月份','帳戶','帳面餘額','實際餘額','差額','原因'],...rows.map(r=>[app.month,accountName(r.account),r.book,r.actual,Number(r.actual)-Number(r.book),r.note])];download(`月底清算_${app.month}.csv`,'\ufeff'+data.map(r=>r.map(csvCell).join(',')).join('\n'),'text/csv;charset=utf-8')}
+function render(){let m=M();$('monthPicker').value=app.month;$('living').value=m.living;$('salaryAccount').innerHTML=opts(m.salaryAccount);$('living').onchange=e=>{if(!editable())return render();m.living=Number(e.target.value);save();render()};$('salaryAccount').onchange=e=>{if(!editable())return render();m.salaryAccount=e.target.value;save();render()};renderFundRows();renderGoals();renderAlloc();renderAccounts();$('basicIncomeTotal').textContent=money(totalIncome());$('basicReceivedTotal').textContent=money(received());$('basicExpenseTotal').textContent=money(totalExpenses());$('basicPaidTotal').textContent=money(paid());$('basicFreeTotal').textContent=money(freeMoney());$('incomeSummary').textContent=`${m.incomes.length} 筆・${money(totalIncome())}・已入帳 ${money(received())}`;$('expenseSummary').textContent=`${m.expenses.length} 筆・${money(totalExpenses())}・已付款 ${money(paid())}`;$('livingSummary').textContent=`額外生活預算 ${money(m.living)}・主要帳戶 ${accountName(m.salaryAccount)}`;$('basicSummary').textContent=`收入 ${money(totalIncome())}・支出 ${money(totalExpenses())}・可規劃 ${money(freeMoney())}`;$('goalSummary').textContent=m.goals.length?`${m.goals.length} 個目標・每月建議 ${money(m.goals.filter(g=>g.mode!=='pause').reduce((s,g)=>s+Number(g.monthly||0),0))}`:'尚未建立目標';$('allocationSummary').textContent=m.allocations.length?`已安排 ${money(m.allocations.reduce((s,x)=>s+Number(x.amount||0),0))}`:'尚未產生分配方案';renderHome();if($('flow').classList.contains('active'))renderFlow();if($('reconcile').classList.contains('active'))renderReconciliation()}
+function renderDreamTree(){
+  const m=M(), free=freeMoney(), transfers=m.transfers||[], transferDone=transfers.length?transfers.filter(x=>x.done).length/transfers.length:0;
+  const planning=m.confirmed?1:0, close=m.reconciliationClosed?1:0;
+  const goalTotal=(m.goals||[]).length, goalDone=(m.goals||[]).filter(g=>Number(g.saved||0)>=Number(g.target||0)&&Number(g.target||0)>0).length;
+  const score=Math.min(1,(planning*.35)+(transferDone*.4)+(close*.25));
+  const stages=[
+    {min:0,icon:'🌱',label:'階段 1・種子',title:'你的夢想正在發芽'},
+    {min:.25,icon:'🌿',label:'階段 2・新芽',title:'每一次規劃，都長出新葉'},
+    {min:.55,icon:'🪴',label:'階段 3・茁壯',title:'你的資金正在穩穩扎根'},
+    {min:.8,icon:'🌳',label:'階段 4・成樹',title:'這個月的夢想樹快完成了'},
+    {min:1,icon:'🌳✨',label:'階段 5・開花',title:'太棒了，這個月開花了'}
+  ];
+  let stage=stages[0];stages.forEach(x=>{if(score>=x.min)stage=x});
+  if($('v5Free'))$('v5Free').textContent=money(free);
+  if($('treeVisual'))$('treeVisual').innerHTML=`<span class="leaf-sway">${stage.icon}</span>`;
+  if($('treeStage'))$('treeStage').textContent=stage.label;
+  if($('treeTitle'))$('treeTitle').textContent=stage.title;
+  if($('treeGoals'))$('treeGoals').textContent=`${goalTotal} 個夢想${goalDone?`・${goalDone} 個完成`:''}`;
+  if($('treeDone'))$('treeDone').textContent=`${Math.round(score*100)}% 本月進度`;
+  const planDone=!!m.confirmed;
+  const transferFinished=transfers.length>0&&transfers.every(x=>x.done);
+  const closeDone=!!m.reconciliationClosed;
+  [['stepPlan',planDone],['stepTransfer',transferFinished],['stepClose',closeDone]].forEach(([id,done])=>{
+    const el=$(id);if(el){el.classList.toggle('done',done);el.firstChild.textContent=done?'✓':'○';}
+  });
+}
+function setDailyMessage(){
+  const now=new Date(),hour=now.getHours(),day=Math.floor(now.getTime()/86400000);
+  const morning=['早安，今天想種下什麼？','新的一天，替夢想澆一點水。','今天的一小步，正在長成未來。','把第一枚金幣，種在最想完成的事上。','你的未來，從今天這顆種子開始。'];
+  const afternoon=['每一筆規劃，都在悄悄長大。','今天的投入，正在為夢想扎根。','別急，好的未來需要一點時間生長。','讓資金往真正重要的方向發芽。','今天也替夢想，多留一片綠葉。'];
+  const evening=['今天，你的夢想又長大了一點。','每一天的累積，都會成為明天的風景。','謝謝今天願意替未來努力的你。','把今天的努力，留給明天開花。','今晚好好休息，夢想仍在悄悄生長。'];
+  const pool=hour<12?morning:hour<18?afternoon:evening,msg=pool[day%pool.length];
+  if($('dailyMessage'))$('dailyMessage').textContent=msg;
+  if($('dailyDate'))$('dailyDate').textContent=new Intl.DateTimeFormat('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(now);
+}
+
+const __v5Render=render; render=function(){__v5Render();renderDreamTree();setDailyMessage()};
+render();
+
+window.addEventListener('load', function(){
+  window.setTimeout(function(){var s=document.getElementById('brandSplash');if(s)s.classList.add('hide')},520);
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js').catch(function(){})}
+});
