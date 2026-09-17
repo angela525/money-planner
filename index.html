@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/app.css?v=7.2.1">
+<link rel="stylesheet" href="css/app.css?v=stability-1.0">
 </head>
 <body class="auth-locked"><div id="authOverlay" class="auth-overlay" aria-live="polite">
   <div class="auth-shell">
@@ -228,7 +228,7 @@
 </section>
 <section id="accounts" class="page">
 <div class="card"><div class="title"><div><h2>帳戶設定</h2><div class="sub">查看月初、本月流入流出、帳面餘額與最近清算結果</div></div><button class="btn" onclick="addAccount()">＋新增帳戶</button></div><div id="accountRows"></div></div>
-<div class="grid two" style="margin-top:14px"><div class="card"><div class="title"><h2>月份紀錄</h2><span class="badge" id="monthCount">0 個月</span></div><div id="monthHistory"></div></div><div class="card"><div class="title"><h2>資料備份</h2></div><div class="backup-box"><button class="btn" onclick="exportBackup()">匯出完整備份</button><label class="file-label">匯入備份<input type="file" accept="application/json,.json" onchange="importBackup(this.files[0]);this.value=''"/></label><button class="btn soft" onclick="exportReconcileCSV()">匯出本月清算 CSV</button></div><div class="notice warn" style="margin-top:12px">資料目前儲存在這個瀏覽器。換裝置或清除瀏覽器資料前，請先匯出備份。</div></div></div>
+<div class="grid two" style="margin-top:14px"><div class="card"><div class="title"><h2>月份紀錄</h2><span class="badge" id="monthCount">0 個月</span></div><div id="monthHistory"></div></div><div class="card"><div class="title"><h2>資料備份</h2></div><div class="backup-box"><button class="btn" onclick="exportBackup()">匯出完整備份</button><label class="file-label">匯入備份<input type="file" accept="application/json,.json" onchange="importBackup(this.files[0]);this.value=''"/></label><button class="btn soft" onclick="exportReconcileCSV()">匯出本月清算 CSV</button></div><div class="notice warn" style="margin-top:12px">登入後以雲端資料為主，本機保留工作副本。重要資料仍建議定期匯出備份。</div></div></div>
 </section>
 <section id="flow" class="page"><div class="grid two"><div class="card"><div class="title"><h2>最佳資金流程</h2><span class="badge" id="feeText">尚未產生</span></div><div id="flowChart"></div></div><div class="card"><div class="title"><h2>待轉帳清單</h2><span class="badge" id="transferProgress">0%</span></div><div id="transferList"></div></div></div><div class="card" style="margin-top:14px"><div class="title"><h2>免費轉帳額度</h2></div><div id="freeQuota"></div></div></section>
 <section id="reconcile" class="page">
@@ -243,7 +243,7 @@
 <div class="card" style="margin-top:14px"><div class="title"><h2>本月清算調整紀錄</h2><span class="badge" id="adjustmentCount">0 筆</span></div><div id="adjustmentRows"></div></div>
 </section>
 </div>
-<div class="brand-footer"><img src="assets/images/brand-logo.png" alt="">Dream Tree · 資金規劃系統 <span class="v5-version">V7.1 Onboarding Fix</span></div><nav class="nav" aria-label="主要導覽">
+<div class="brand-footer"><img src="assets/images/brand-logo.png" alt="">Dream Tree · 資金規劃系統 <span class="v5-version">Stability 1.0</span></div><nav class="nav" aria-label="主要導覽">
   <button data-page="plan" onclick="showPage('plan')"><span class="ni">＄</span><span class="nl">規劃</span></button>
   <button data-page="flow" onclick="showPage('flow')"><span class="ni">⇄</span><span class="nl">轉帳</span></button>
   <button class="active" data-page="home" onclick="showPage('home')"><span class="ni">⌂</span><span class="nl">首頁</span></button>
@@ -255,6 +255,6 @@
 
 
 
-<script src="js/app.js?v=7.2.1" defer></script>
-<script type="module" src="js/firebase-cloud.js?v=7.2.1"></script>
+<script src="js/app.js?v=stability-1.0" defer></script>
+<script type="module" src="js/firebase-cloud.js?v=stability-1.0"></script>
 </body></html>
