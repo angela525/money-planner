@@ -197,5 +197,6 @@ render();
 
 window.addEventListener('load', function(){
   window.setTimeout(function(){var s=document.getElementById('brandSplash');if(s)s.classList.add('hide')},520);
-  if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js').catch(function(){})}
+  if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))).catch(()=>{})}
+  if('caches' in window){caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('dream-tree-')).map(k=>caches.delete(k)))).catch(()=>{})}
 });
