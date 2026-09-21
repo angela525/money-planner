@@ -3,7 +3,7 @@ import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   signOut, onAuthStateChanged, sendPasswordResetEmail, updateProfile,
   setPersistence, browserLocalPersistence, GoogleAuthProvider,
-  signInWithPopup, signInWithRedirect, getRedirectResult
+  signInWithPopup
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp
@@ -14,7 +14,7 @@ const firebaseApp=initializeApp(firebaseConfig);
 const auth=getAuth(firebaseApp);
 const db=getFirestore(firebaseApp);
 auth.languageCode='zh-TW';
-setPersistence(auth,browserLocalPersistence).catch(()=>{});
+try{await setPersistence(auth,browserLocalPersistence)}catch(err){console.warn('Auth persistence unavailable',err)}
 
 const $=id=>document.getElementById(id);
 const state={user:null,unsub:null,writeTimer:null,lastLocal:'',lastRemote:'',ready:false};
@@ -39,7 +39,7 @@ function translateError(error){
     'auth/invalid-credential':'Email 或密碼不正確。','auth/user-disabled':'這個帳號已停用。',
     'auth/too-many-requests':'嘗試次數過多，請稍後再試。','auth/network-request-failed':'網路連線失敗，請確認網路。',
     'auth/popup-closed-by-user':'Google 登入視窗已關閉。',
-    'auth/popup-blocked':'瀏覽器阻擋登入視窗，正在改用重新導向登入。',
+    'auth/popup-blocked':'瀏覽器阻擋 Google 登入視窗，請允許彈出式視窗後重試。',
     'auth/cancelled-popup-request':'Google 登入已取消。',
     'auth/account-exists-with-different-credential':'這個 Email 已使用其他登入方式註冊。',
     'auth/unauthorized-domain':'目前網站網域尚未加入 Firebase 已授權網域。',
@@ -55,40 +55,37 @@ function setMode(mode){
 window.setAuthMode=setMode;
 
 
-const prefersRedirect=()=>matchMedia('(max-width: 760px), (pointer: coarse)').matches;
-
 const googleProvider=new GoogleAuthProvider();
 googleProvider.setCustomParameters({prompt:'select_account'});
+
+function isEmbeddedBrowser(){
+  const ua=navigator.userAgent||'';
+  return /Line\//i.test(ua)||/FBAN|FBAV|Instagram/i.test(ua);
+}
 
 async function googleLogin(){
   const button=$('googleLoginButton');
   if(button)button.disabled=true;
   setAuthMessage('正在開啟 Google 登入…');
   try{
-    if(prefersRedirect()){
-      sessionStorage.setItem('dreamTreeGoogleRedirect','1');
-      await signInWithRedirect(auth,googleProvider);
+    if(isEmbeddedBrowser()){
+      setAuthMessage('LINE／社群 App 內建瀏覽器可能限制 Google 登入。請用 Safari、Chrome 或 Edge 開啟此頁；也可使用 Email 登入。','bad');
       return;
     }
     await signInWithPopup(auth,googleProvider);
     setAuthMessage('Google 登入成功，正在載入資料…','ok');
   }catch(err){
-    if(err?.code==='auth/popup-blocked'||err?.code==='auth/operation-not-supported-in-this-environment'){
-      sessionStorage.setItem('dreamTreeGoogleRedirect','1');
-      setAuthMessage('正在改用安全重新導向登入…');
-      await signInWithRedirect(auth,googleProvider);
-      return;
+    console.error('Google sign-in failed',err);
+    const popupIssues=['auth/popup-blocked','auth/operation-not-supported-in-this-environment','auth/web-storage-unsupported'];
+    if(popupIssues.includes(err?.code)){
+      setAuthMessage('此瀏覽器阻擋 Google 登入視窗。請允許彈出式視窗後重試，或改用 Email 登入。','bad');
+    }else{
+      setAuthMessage(translateError(err),'bad');
     }
-    setAuthMessage(translateError(err),'bad');
   }finally{
     if(button)button.disabled=false;
   }
 }
-
-getRedirectResult(auth).then(result=>{
-  if(result?.user)setAuthMessage('Google 登入成功，正在載入資料…','ok');
-  sessionStorage.removeItem('dreamTreeGoogleRedirect');
-}).catch(err=>setAuthMessage(translateError(err),'bad'));
 
 async function register(e){
   e.preventDefault();setAuthMessage('正在建立帳號…');
